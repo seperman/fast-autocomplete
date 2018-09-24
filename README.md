@@ -167,6 +167,16 @@ For an example of this code properly setup, take a look at the tests.
 2. Make a virtualenv with Python 3.6 or newer
 3. `pip install -r requirements-dev.txt`
 
+## Run tests
+
+`pytest`
+
+
+# Authors
+
+- Autocomplete by [Sep Dehpour](fair.com) at Fair Financial Corp.
+- LFU Cache by [Shane Wang](medium.com/@epicshane)
+
 
 # FAQ
 
