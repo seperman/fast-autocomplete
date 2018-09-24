@@ -174,7 +174,7 @@ For an example of this code properly setup, take a look at the tests.
 
 # Authors
 
-- Autocomplete by [Sep Dehpour](https://fair.com) at Fair Financial Corp.
+- Autocomplete by [Sep Dehpour](http://zepworks.com) at [Fair Financial Corp](https://fair.com).
 - LFU Cache by [Shane Wang](https://medium.com/@epicshane)
 
 
