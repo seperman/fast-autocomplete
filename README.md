@@ -219,6 +219,8 @@ This package can actually draw the dawgs as it is populating them or just once t
 Here is the animation of populating the dawg with words from "makes_models_short.csv":
 
 
+### Draw animation of dawg populating
+
 ```py
 import os
 import csv
@@ -237,6 +239,24 @@ autocomplete = AutoCompleteDraw(words=words, synonyms=synonyms)
 As soon as you initialize the above AutoCompleteDraw class, it will populate the dawg and generate the animation!
 For an example of this code properly setup, take a look at the tests. In fact the animation in the [dawg](#dawg) section is generated the same way via unit tests!
 
+Note that if you have many words, the graph file will be big. Instead of drawing all frames as the dawg is being populated, you can just draw the final stage:
+
+### Draw the final graph
+
+To draw just one graph that shows the final stage of the dawg, use the draw mixin and run the draw_graph function:
+
+```py
+import os
+import csv
+from fast_autocomplete import AutoComplete, DrawGraphMixin
+
+
+class AutoCompleteDraw(DrawGraphMixin, AutoComplete):
+    pass
+
+autocomplete = AutoCompleteDraw(words=words, synonyms=synonyms)
+autocomplete.draw_graph('path to file')
+```
 
 # Develop
 
