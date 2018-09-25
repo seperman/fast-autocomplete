@@ -248,6 +248,8 @@ For an example of this code properly setup, take a look at the tests. In fact th
 
 `pytest`
 
+We try to maintain high standard in code coverage. Currently the `dawg` module's coverage is around 99%!
+
 
 # Authors
 
