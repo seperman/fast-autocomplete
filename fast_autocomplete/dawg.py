@@ -118,6 +118,19 @@ class AutoComplete:
         pass
 
     def insert_word_branch(self, word, leaf_node=None, add_word=True, original_key=None):
+        """
+        Inserts a word into the Dawg.
+
+        :param word: The word to be inserted as a branch of dawg
+        :param leaf_node: (optional) The leaf node for the node to merge into in the dawg.
+        :param add_word: (Boolean, default: True) Add the word itself at the end of the branch.
+                          Usually this is set to False if we are merging into a leaf node and do not
+                          want to add the actual word there.
+        :param original_key: If the word that is being added was originally another word.
+                             For example with synonyms, you might be inserting the word `beemer` but the
+                             original key is `bmw`. This parameter might be removed in the future.
+
+        """
         if leaf_node:
             temp_leaf_node = self._dawg.insert(word[:-1], add_word=add_word, original_key=original_key)
             temp_leaf_node.children[word[-1]] = leaf_node

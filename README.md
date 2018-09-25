@@ -44,7 +44,13 @@ And return Autocomplete results as you type.
 
 Are you still on Python 2? TIME TO UPGRADE.
 
+# Licence
+
+MIT
+
 # DAWG
+
+The data structure we use in this library is called Dawg.
 
 DAWG stands for Directed Acyclic Word Graph. Here is an example DAWG based on the "makes_models_short.csv" that is provided in the tests:
 
@@ -55,59 +61,159 @@ DAWG stands for Directed Acyclic Word Graph. Here is an example DAWG based on th
 
 # Usage
 
-First you need to initialize your tree by defining a get_words and optionally get_synonyms functions.
+First of all lets start from your data. The library leaves it up to you how to prepare your data.
+Imagine that we have a csv with the following content from vehicles' make and models:
 
-Example:
-
-```py
-import os
-import csv
-from fast_autocomplete.misc import read_csv_gen
-from fast_autocomplete import AutoCompleteBase
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-
-class AutoComplete(AutoCompleteBase):
-
-    MAKE_MODELS_CSV = 'fixtures/makes_models_short.csv'
-
-    def get_words(self):
-
-        file_path = os.path.join(current_dir, self.MAKE_MODELS_CSV)
-        csv_gen = read_csv_gen(file_path, csv_func=csv.DictReader)
-
-        words = {}
-
-        for line in csv_gen:
-            make = line['make']
-            model = line['model']
-            if make != model:
-                local_words = [model, '{} {}'.format(make, model)]
-                while local_words:
-                    word = local_words.pop()
-                    if word not in words:
-                        words[word] = dict(line)
-            if make not in words:
-                words[make] = {"make": make}
-        return words
-
-    def get_synonyms(self):
-        with open(os.path.join(current_dir, 'fixtures/synonyms.json'), 'r') as the_file:
-            return json.loads(the_file.read())
+```csv
+make,model
+acura,zdx
+alfa romeo,4c
+alfa romeo,4c coupe
+alfa romeo,giulia
+bmw,1 series
+bmw,2 series
+2007,2007
+2017,2017
+2018,2018
 ```
 
-Then you can search:
+What we want to do is to convert this to a dictionary of words and their context.
+
+
+```py
+import csv
+from fast_autocomplete.misc import read_csv_gen
+
+
+def get_words(path):
+
+    csv_gen = read_csv_gen(path, csv_func=csv.DictReader)
+
+    words = {}
+
+    for line in csv_gen:
+        make = line['make']
+        model = line['model']
+        if make != model:
+            local_words = [model, '{} {}'.format(make, model)]
+            while local_words:
+                word = local_words.pop()
+                if word not in words:
+                    words[word] = {}
+        if make not in words:
+            words[make] = {}
+    return words
+```
+
+the `read_csv_gen` is just a helper function. You don't really need it. The whole point is that we are converting that csv to a dictionary that looks like this:
+
+```py
+>>> words = get_words('path to the csv')
+>>> words
+{'acura zdx': {},
+ 'zdx': {},
+ 'acura': {},
+ 'alfa romeo 4c': {},
+ '4c': {},
+ 'alfa romeo': {},
+ 'alfa romeo 4c coupe': {},
+ '4c coupe': {},
+ 'alfa romeo giulia': {},
+ 'giulia': {},
+ 'bmw 1 series': {},
+ '1 series': {},
+ 'bmw': {},
+ 'bmw 2 series': {},
+ '2 series': {},
+ '2007': {},
+ '2017': {},
+ '2018': {}}
+```
+
+This is a dictionary of words to their context. We have decided that we don't want any context for the words in this example so all the contexts are None. However generally you will want some context around the words for more complicated logics.
+
+In addition to words, we usually want a dictionary of synonyms. Something like this:
+
+```py
+synonyms = {
+    "alfa romeo": ["alfa"],
+    "bmw": ["beemer", "bimmer"],
+    "mercedes-benz": ["mercedes", "benz"],
+    "volkswagen": ["vw"]
+}
+```
+
+Note that synonyms are optional. Maybe in your use case you don't need synonyms.
+
+Now we can use the above to initialize Autocomplete
+
+```py
+
+from fast_autocomplete import AutoComplete
+
+autocomplete = AutoComplete(words=words, synonyms=synonyms)
+```
+
+At this point, AutoComplete has created a [dawg](#DAWG) structure.
+
+Now you can search!
 
 - word: the word to return autocomplete results for
 - max_cost: Maximum Levenshtein edit distance to be considered when calculating results
 - size: The max number of results to return
 
 ```py
->>> autocomplete = Autocomplete()
->>> autocomplete.search(word='2018 doyota camr', max_cost=3, size=3)
-[['2018'], ['2018', 'toyota', 'camry'], ['2018', 'toyota', 'camry hybrid']]
+>>> autocomplete.search(word='2018 bmw 1', max_cost=3, size=3)
+[['2018', 'bmw'], ['2018', 'bmw 1 series']]
 ```
+
+Now what if we pressed a by mistake then? It still works. No problem.
+
+```py
+>>> autocomplete.search(word='2018 bmw 1a', max_cost=3, size=3)
+[['2018', 'bmw'], ['2018', 'bmw 1 series']]
+```
+
+Ok let's search for Alfa now:
+
+```py
+>>> autocomplete.search(word='alfa', max_cost=3, size=3)
+[['alfa romeo'], ['alfa romeo 4c'], ['alfa romeo giulia']]
+```
+
+What if we don't know how to pronounce alfa and we type `alpha` ?
+
+```py
+>>> autocomplete.search(word='alpha', max_cost=3, size=3)
+[['alfa romeo'], ['alfa romeo 4c'], ['alfa romeo giulia']]
+```
+
+It still works!
+
+Fast-Autocomplete makes sure the results make sense!
+
+Ok lets add the word `Los Angeles` there to the words:
+
+
+```py
+>>> words['los angeles'] = {}
+>>> words['in'] = {}
+>>> autocomplete.search(word='2007 alfa in los', max_cost=3, size=3)
+[['2007', 'alfa romeo', 'in'], ['2007', 'alfa romeo', 'in', 'los angeles']]
+```
+
+So far we have not used the context. And this library leaves it up to you how to use the context. But basically if we giving a context to each one of those words, then the above response could easly be translated to the list of those contexts.
+
+Such as:
+
+```
+[['2007', 'alfa romeo', 'in'], ['2007', 'alfa romeo', 'in', 'los angeles']]
+
+converted to contexts:
+
+[[{'year': '2007'}, {'make': alfa romeo'}], [{'year': '2007'}, {'make': alfa romeo'}, {'location': 'los angeles'}]]
+```
+
 
 ## Draw
 
@@ -118,47 +224,20 @@ Here is the animation of populating the dawg with words from "makes_models_short
 ```py
 import os
 import csv
-from fast_autocomplete import AutoCompleteBase, DrawGraphMixin
-from fast_autocomplete.misc import read_csv_gen
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
+from fast_autocomplete import AutoComplete, DrawGraphMixin
 
 
-class AutoComplete(DrawGraphMixin, AutoCompleteBase):
-
-    MAKE_MODELS_CSV = 'fixtures/makes_models_short.csv'
-
+class AutoCompleteDraw(DrawGraphMixin, AutoComplete):
     DRAW_POPULATION_ANIMATION = True
-    DRAW_POPULATION_ANIMATION_PATH = os.path.join(current_dir, 'animation/short_.svg')
+    DRAW_POPULATION_ANIMATION_PATH = 'animation/short_.svg'
     DRAW_POPULATION_ANIMATION_FILENO_PADDING = 6
 
-    def get_words(self):
 
-        file_path = os.path.join(current_dir, self.MAKE_MODELS_CSV)
-        csv_gen = read_csv_gen(file_path, csv_func=csv.DictReader)
-
-        words = {}
-
-        for line in csv_gen:
-            make = line['make']
-            model = line['model']
-            if make != model:
-                local_words = [model, '{} {}'.format(make, model)]
-                while local_words:
-                    word = local_words.pop()
-                    if word not in words:
-                        words[word] = dict(line)
-            if make not in words:
-                words[make] = {"make": make}
-        return words
-
-    def get_synonyms(self):
-        with open(os.path.join(current_dir, 'fixtures/synonyms.json'), 'r') as the_file:
-            return json.loads(the_file.read())
+autocomplete = AutoCompleteDraw(words=words, synonyms=synonyms)
 ```
 
-As soon as you initialize the above Autocomplete class, it will populate the dawg and generate the animation!
-For an example of this code properly setup, take a look at the tests.
+As soon as you initialize the above AutoCompleteDraw class, it will populate the dawg and generate the animation!
+For an example of this code properly setup, take a look at the tests. In fact the animation in the [dawg](#dawg) section is generated the same way via unit tests!
 
 
 # Develop
@@ -204,4 +283,4 @@ Answer: We use letters for edges. So `alfa` can have only one edge coming out of
 
 ## I put Toyota in the Dawg but when I type `toy`, it doesn't show up.
 
-Answer: If you put `Toyota` with capital T in the dawg, it expects the search word to start with capital T too. We suggest that you lower case everything before putting them in dawg. Perhaps we should automatically force lower case all words. What do you think?
+Answer: If you put `Toyota` with capital T in the dawg, it expects the search word to start with capital T too. We suggest that you lower case everything before putting them in dawg. Fast-autocomplete does not automatically do that for you since it assumes the `words` dictionary is what you want to be put in the dawg. It is up to you to clean your own data before putting it in the dawg.
