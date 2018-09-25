@@ -4,7 +4,7 @@ import json
 import pytest
 from pprint import pprint
 from fast_autocomplete.misc import read_csv_gen
-from fast_autocomplete import AutoCompleteBase, DrawGraphMixin
+from fast_autocomplete import AutoComplete, DrawGraphMixin
 from fast_autocomplete.dawg import FindStep
 
 
@@ -24,29 +24,34 @@ def print_results(local_vars):
         pprint(local_vars[key])
 
 
-class AutoComplete(AutoCompleteBase):
+def get_words(path):
 
-    MAKE_MODELS_CSV = 'fixtures/makes_models_from_wikipedia.csv'
+    file_path = os.path.join(current_dir, path)
+    csv_gen = read_csv_gen(file_path, csv_func=csv.DictReader)
 
-    def get_words(self):
+    words = {}
 
-        file_path = os.path.join(current_dir, self.MAKE_MODELS_CSV)
-        csv_gen = read_csv_gen(file_path, csv_func=csv.DictReader)
+    for line in csv_gen:
+        make = line['make'].lower()
+        model = line['model'].lower()
+        if make != model:
+            local_words = [model, '{} {}'.format(make, model)]
+            while local_words:
+                word = local_words.pop()
+                if word not in words:
+                    words[word] = dict(line)
+        if make not in words:
+            words[make] = {"make": make}
+    return words
 
-        words = {}
 
-        for line in csv_gen:
-            make = line['make'].lower()
-            model = line['model'].lower()
-            if make != model:
-                local_words = [model, '{} {}'.format(make, model)]
-                while local_words:
-                    word = local_words.pop()
-                    if word not in words:
-                        words[word] = dict(line)
-            if make not in words:
-                words[make] = {"make": make}
-        return words
+WIKIPEDIA_WORDS = get_words('fixtures/makes_models_from_wikipedia.csv')
+
+SHORT_WORDS = get_words('fixtures/makes_models_short.csv')
+
+
+with open(os.path.join(current_dir, 'fixtures/synonyms.json'), 'r') as the_file:
+    SYNONYMS = json.loads(the_file.read())
 
 
 class TestAutocomplete:
@@ -62,20 +67,11 @@ class TestAutocomplete:
                                    ['honda clarity']]}),
     ])
     def test_search_without_synonyms(self, word, max_cost, size, expected_results):
-        auto_complete = AutoComplete()
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS)
         results, find_steps = auto_complete._find(word, max_cost, size)
         results = dict(results)
         print_results(locals())
         assert expected_results == results
-
-
-class AutoCompleteWithSynonyms(AutoComplete):
-
-    MAKE_MODELS_CSV = 'fixtures/makes_models_from_wikipedia.csv'
-
-    def get_synonyms(self):
-        with open(os.path.join(current_dir, 'fixtures/synonyms.json'), 'r') as the_file:
-            return json.loads(the_file.read())
 
 
 STEP_DESCENDANTS_ONLY = [FindStep.descendants_only]
@@ -263,7 +259,7 @@ class TestAutocompleteWithSynonyms:
     @pytest.mark.parametrize("word, max_cost, size, expected_find_results, expected_steps, expected_find_and_sort_results", SEARCH_CASES_PARAMS)
     def test_find(self, word, max_cost, size, expected_find_results, expected_steps, expected_find_and_sort_results):
         expected_results = expected_find_results
-        auto_complete = AutoCompleteWithSynonyms()
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
         results, find_steps = auto_complete._find(word, max_cost, size)
         results = dict(results)
         print_results(locals())
@@ -273,7 +269,7 @@ class TestAutocompleteWithSynonyms:
     @pytest.mark.parametrize("word, max_cost, size, expected_find_results, expected_steps, expected_find_and_sort_results", SEARCH_CASES_PARAMS)
     def test__find_and_sort(self, word, max_cost, size, expected_find_results, expected_steps, expected_find_and_sort_results):
         expected_results = expected_find_and_sort_results
-        auto_complete = AutoCompleteWithSynonyms()
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
         results = auto_complete._find_and_sort(word, max_cost, size)
         results = list(results)
         search_results = auto_complete.search(word, max_cost, size)
@@ -285,9 +281,8 @@ class TestAutocompleteWithSynonyms:
             assert [] == search_results
 
 
-class AutoCompleteWithSynonymsShort(DrawGraphMixin, AutoCompleteWithSynonyms):
-
-    MAKE_MODELS_CSV = 'fixtures/makes_models_short.csv'
+class AutoCompleteWithSynonymsShort(DrawGraphMixin, AutoComplete):
+    pass
 
 
 class AutoCompleteWithSynonymsShortWithAnim(AutoCompleteWithSynonymsShort):
@@ -300,12 +295,12 @@ class AutoCompleteWithSynonymsShortWithAnim(AutoCompleteWithSynonymsShort):
 class TestAutoCompleteWithSynonymsShortGraphDraw:
 
     def test_draw_graph(self):
-        auto_complete = AutoCompleteWithSynonymsShort()
+        auto_complete = AutoCompleteWithSynonymsShort(words=SHORT_WORDS)
         file_path = os.path.join(current_dir, 'AutoCompleteWithSynonymsShort_Graph.svg')
         auto_complete.draw_graph(file_path)
 
     def test_draw_graph_animation(self):
-        AutoCompleteWithSynonymsShortWithAnim()
+        AutoCompleteWithSynonymsShortWithAnim(words=SHORT_WORDS)
 
 
 class TestPrefixAndDescendants:
@@ -323,7 +318,7 @@ class TestPrefixAndDescendants:
     ])
     def test_prefix_autofill(self, word, expected_matched_prefix_of_last_word,
                              expected_rest_of_word, expected_matched_words, expected_node_path):
-        auto_complete = AutoCompleteWithSynonyms()
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
         matched_prefix_of_last_word, rest_of_word, node, matched_words = auto_complete._prefix_autofill(word)
         print(f'word: {word}')
         print(f'expected_matched_prefix_of_last_word: {expected_matched_prefix_of_last_word}')
@@ -347,7 +342,7 @@ class TestPrefixAndDescendants:
         ('2018 alfa', ['alfa rl', 'alfa rm', 'alfa 4c']),
     ])
     def test_get_descendants_nodes(self, word, expected_result):
-        auto_complete = AutoCompleteWithSynonyms()
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
         matched_prefix_of_last_word, rest_of_word, node, matched_words = auto_complete._prefix_autofill(word)
         found_words_gen = node.get_descendants_nodes(size=2)
         found_words = [_node.word for _node in found_words_gen]

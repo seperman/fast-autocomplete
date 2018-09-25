@@ -20,33 +20,28 @@ class FindStep(Enum):
     not_enough_results_add_some_descandants = 5
 
 
-class AutoCompleteBase:
+class AutoComplete:
 
     CACHE_SIZE = 2048
 
-    def __init__(self):
-        self.lock = Lock()
+    def __init__(self, words, synonyms=None):
+        """
+        Inistializes the Autocomplete module
+
+        :param words: A dictionary of words mapped to their context
+        :param synonyms: (optional) A dictionary of words to their synonyms.
+                         The synonym words should only be here and not repeated in words parameter.
+        """
+        self._lock = Lock()
         self._dawg = None
-        self._words = None
+        self._raw_synonyms = synonyms or {}
         self._lfu_cache = LFUCache(self.CACHE_SIZE)
         self._clean_synonyms, self._partial_synonyms = self._get_clean_and_partial_synonyms()
         self._reverse_synonyms = self._get_reverse_synonyms(self._clean_synonyms)
-        self._words = self.get_words()
+        self._words = words
         new_words = self._get_partial_synonyms_to_words()
         self._words.update(new_words)
         self._populate_dawg()
-
-    def get_words(self):
-        """
-        Should return a dictionary of all words and respective payload.
-        """
-        raise NotImplementedError('Please implement get_words.')
-
-    def get_synonyms(self):
-        """
-        Should return a list of synonyms to a word
-        """
-        pass
 
     def _get_clean_and_partial_synonyms(self):
         """
@@ -61,11 +56,10 @@ class AutoCompleteBase:
         2. partial synonyms: One of the 2 words is a substring of the other one. For example `alfa` and `alfa romeo` or `gm` vs. `gmc`.
 
         """
-        raw_synonyms = self.get_synonyms() or {}
         clean_synonyms = {}
         partial_synonyms = {}
 
-        for key, synonyms in raw_synonyms.items():
+        for key, synonyms in self._raw_synonyms.items():
             key = key.strip().lower()
             _clean = []
             _partial = []
@@ -104,7 +98,7 @@ class AutoCompleteBase:
 
     def _populate_dawg(self):
         if not self._dawg:
-            with self.lock:
+            with self._lock:
                 if not self._dawg:
                     self._dawg = _DawgNode()
                     for word, value in self._words.items():
@@ -175,7 +169,7 @@ class AutoCompleteBase:
 
     @staticmethod
     def _is_enough_results(results, size):
-        return AutoCompleteBase._len_results(results) >= size
+        return AutoComplete._len_results(results) >= size
 
     def _find(self, word, max_cost, size, call_count=0):
         """
