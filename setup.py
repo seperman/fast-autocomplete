@@ -28,7 +28,7 @@ except Exception:
     long_description = "Autocomplete"
 
 setup(
-    name='autocomplete',
+    name='fast-autocomplete',
     description=long_description,
     author='Sep Dehpour',
     url='https://github.com/wearefair/fast-autocomplete',
