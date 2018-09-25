@@ -8,15 +8,13 @@ The results are cached via LFU (Least Frequently Used).
 
 This library was written when we came to the conclusion that Elasticsearch's Autocomplete suggestor is not fast enough and doesn't do everything that we need:
 
-1. Once we switched to Fast Autocomplete, our average latency went from 120ms to 30ms so an improvement of 3-4x in performance.
-2. Elasticsearch's Autocomplete suggestor does not handle fuzzy matches when the first few characters have mis-spelling in them.
-3. Elasticsearch's Autocomplete suggestor does not handle any sort of combination of the words you have put in. For example Fast Autocomplete can handle `2018 Toyota Camry in Los Angeles` when the words `2018`, `Toyota Camry`, `Los Angeles` are seperately fed into it. While Elasticsearch's autocomplete needs that whole sentence to be fed to it to show it in Autocomplete results.
+1. Once we switched to Fast Autocomplete, our average latency went from 120ms to 30ms so an improvement of 3-4x in performance and errors went down to zero.
+2. Elasticsearch's Autocomplete suggestor does not handle any sort of combination of the words you have put in. For example Fast Autocomplete can handle `2018 Toyota Camry in Los Angeles` when the words `2018`, `Toyota Camry`, `Los Angeles` are seperately fed into it. While Elasticsearch's autocomplete needs that whole sentence to be fed to it to show it in Autocomplete results.
 
 You might say:
 
 1. Regarding #1: Yes, but you are using caching. Answer: shhh Yes, keep it quiet. We are also doing Levenshtein Edit distance using a C library so it improves there too.
-2. Regarding #2: You can use the normal search in Elasticsearch with edge grams and N-grams. Answer: Yes we could, but that is sub-optimal and even slower than Elasticsearch's built-in Autocomplete suggestor. Why would you want to add all those variations of words to your graph when Levenshtein can get you the fuzzy matches?
-3. Regarding #3: I'm speechless. Answer: Ok, now we are talking.
+2. Regarding #2: I'm speechless. Answer: Ok, now we are talking.
 
 
 # How
@@ -255,6 +253,12 @@ For an example of this code properly setup, take a look at the tests. In fact th
 
 - Autocomplete by [Sep Dehpour](http://zepworks.com) at [Fair Financial Corp](https://fair.com).
 - LFU Cache by [Shane Wang](https://medium.com/@epicshane)
+
+# Other ways of doing AutoComplete
+
+1. Elastic search. Yes, Elasticsearch generally is a *better* Autocomplete solution than this library. I said generally. In our specific use case, we wanted Autocomplete to be faster than Elasticsearch and handle combination of words. Otherwise Elasticsearch would have been perfect. Behind the scene Elasticsearch uses Finite State Transducer (FST) in Lucene to achive AutoComplete. FST is more complicated than what we have used in fast-autocomplete.
+
+2. If your autocomplete is supposed to return results based on a big blog of text (for example based on some book contents), then a better solution is to go with Markov chains and conditional probability. Yes, there is already a library out there for it! <https://github.com/rodricios/autocomplete> and it looks great. Disclaimer: we have not actually used it since it doesn't fit our specific use-case.
 
 
 # FAQ
