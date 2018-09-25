@@ -1,4 +1,4 @@
-Fast Autocomplete 0.1.0
+Fast Autocomplete 0.1.1
 =======================
 
 Fast autocomplete using Directed Acyclic Word Graph (DAWG) and
@@ -163,8 +163,10 @@ that looks like this:
 
 This is a dictionary of words to their context. We have decided that we
 don’t want any context for the words in this example so all the contexts
-are None. However generally you will want some context around the words
-for more complicated logics.
+are empty. However generally you will want some context around the words
+for more complicated logics. The context is used to convert the words
+“keys” into their context which is the value of the key in the words
+dictionary.
 
 In addition to words, we usually want a dictionary of synonyms.
 Something like this:
@@ -243,7 +245,22 @@ you how to use the context. But basically if we giving a context to each
 one of those words, then the above response could easly be translated to
 the list of those contexts.
 
-Such as:
+context
+-------
+
+If our words dictionary was:
+
+.. code:: py
+
+    words = {
+     'in': {},
+     'alfa romeo': {'type': 'make'},
+     '2007': {'type': 'year'},
+     'los angeles': {'type': 'location'},
+    }
+
+Then the ``autocomplete.words`` can be used to map the results into
+their context:
 
 ::
 
@@ -265,8 +282,6 @@ Draw animation of dawg populating
 
 .. code:: py
 
-    import os
-    import csv
     from fast_autocomplete import AutoComplete, DrawGraphMixin
 
 
@@ -295,8 +310,6 @@ draw mixin and run the draw_graph function:
 
 .. code:: py
 
-    import os
-    import csv
     from fast_autocomplete import AutoComplete, DrawGraphMixin
 
 
