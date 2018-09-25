@@ -38,9 +38,9 @@ class AutoComplete:
         self._lfu_cache = LFUCache(self.CACHE_SIZE)
         self._clean_synonyms, self._partial_synonyms = self._get_clean_and_partial_synonyms()
         self._reverse_synonyms = self._get_reverse_synonyms(self._clean_synonyms)
-        self._words = words
+        self.words = words
         new_words = self._get_partial_synonyms_to_words()
-        self._words.update(new_words)
+        self.words.update(new_words)
         self._populate_dawg()
 
     def _get_clean_and_partial_synonyms(self):
@@ -86,7 +86,7 @@ class AutoComplete:
 
     def _get_partial_synonyms_to_words(self):
         new_words = {}
-        for key, value in self._words.items():
+        for key, value in self.words.items():
             value = value.copy()
             value[ORIGINAL_KEY] = key
             for syn_key, syns in self._partial_synonyms.items():
@@ -101,7 +101,7 @@ class AutoComplete:
             with self._lock:
                 if not self._dawg:
                     self._dawg = _DawgNode()
-                    for word, value in self._words.items():
+                    for word, value in self.words.items():
                         original_key = value.get(ORIGINAL_KEY)
                         word = word.strip().lower()
                         leaf_node = self.insert_word_branch(word, original_key=original_key)
@@ -150,7 +150,7 @@ class AutoComplete:
                     reversed_item = self._reverse_synonyms.get(item)
                     if reversed_item:
                         output_items[i] = reversed_item
-                    elif item not in self._words:
+                    elif item not in self.words:
                         output_items[i] = None
                 output_items_str = DELIMITER.join(output_items)
                 if output_items and output_items_str not in output_keys_set:
@@ -215,13 +215,13 @@ class AutoComplete:
                 new_word = f'{new_word} {word_chunks.popleft()}'
             fuzzy_rest_of_word = ' '.join(word_chunks)
 
-            for _word in self._words:
+            for _word in self.words:
                 if abs(len(_word) - len(new_word)) > max_cost:
                     continue
                 dist = levenshtein_distance(new_word, _word)
                 if dist < max_cost:
                     fuzzy_matches_len += 1
-                    _value = self._words[_word].get(ORIGINAL_KEY, _word)
+                    _value = self.words[_word].get(ORIGINAL_KEY, _word)
                     fuzzy_matches[dist].append(_value)
                     fuzzy_min_distance = min(fuzzy_min_distance, dist)
                     if fuzzy_matches_len >= size or dist < 2:

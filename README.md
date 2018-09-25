@@ -128,7 +128,7 @@ the `read_csv_gen` is just a helper function. You don't really need it. The whol
  '2018': {}}
 ```
 
-This is a dictionary of words to their context. We have decided that we don't want any context for the words in this example so all the contexts are None. However generally you will want some context around the words for more complicated logics.
+This is a dictionary of words to their context. We have decided that we don't want any context for the words in this example so all the contexts are empty. However generally you will want some context around the words for more complicated logics. The context is used to convert the words "keys" into their context which is the value of the key in the words dictionary.
 
 In addition to words, we usually want a dictionary of synonyms. Something like this:
 
@@ -202,7 +202,20 @@ Ok lets add the word `Los Angeles` there to the words:
 
 So far we have not used the context. And this library leaves it up to you how to use the context. But basically if we giving a context to each one of those words, then the above response could easly be translated to the list of those contexts.
 
-Such as:
+## context
+
+If our words dictionary was:
+
+```py
+words = {
+ 'in': {},
+ 'alfa romeo': {'type': 'make'},
+ '2007': {'type': 'year'},
+ 'los angeles': {'type': 'location'},
+}
+```
+
+Then the `autocomplete.words` can be used to map the results into their context:
 
 ```
 [['2007', 'alfa romeo', 'in'], ['2007', 'alfa romeo', 'in', 'los angeles']]
@@ -222,8 +235,6 @@ Here is the animation of populating the dawg with words from "makes_models_short
 ### Draw animation of dawg populating
 
 ```py
-import os
-import csv
 from fast_autocomplete import AutoComplete, DrawGraphMixin
 
 
@@ -246,8 +257,6 @@ Note that if you have many words, the graph file will be big. Instead of drawing
 To draw just one graph that shows the final stage of the dawg, use the draw mixin and run the draw_graph function:
 
 ```py
-import os
-import csv
 from fast_autocomplete import AutoComplete, DrawGraphMixin
 
 
