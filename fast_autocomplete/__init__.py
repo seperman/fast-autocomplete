@@ -7,3 +7,4 @@ if pyversion < 3.6:
 
 from fast_autocomplete.dawg import AutoComplete
 from fast_autocomplete.draw import DrawGraphMixin
+from fast_autocomplete.demo import demo
