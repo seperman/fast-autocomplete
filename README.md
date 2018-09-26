@@ -1,4 +1,4 @@
-# Fast Autocomplete 0.1.1
+# Fast Autocomplete 0.1.2
 
 Fast autocomplete using Directed Acyclic Word Graph (DAWG) and Levenshtein Edit Distance.
 
@@ -265,6 +265,18 @@ class AutoCompleteDraw(DrawGraphMixin, AutoComplete):
 
 autocomplete = AutoCompleteDraw(words=words, synonyms=synonyms)
 autocomplete.draw_graph('path to file')
+```
+
+## Demo
+
+If you want to have a real-time interaction with Autocomplete results in your terminal, you can use the demo module:
+
+Just pass it an instance of the autocomplete and the search configs:
+
+```py
+from fast_autocomplete import demo
+
+demo(autocomplete, max_cost=3, size=5)
 ```
 
 # Develop
