@@ -2,6 +2,8 @@ import os
 import csv
 import json
 import pytest
+from typing import NamedTuple
+
 from pprint import pprint
 from fast_autocomplete.misc import read_csv_gen
 from fast_autocomplete import AutoComplete, DrawGraphMixin
@@ -10,7 +12,19 @@ from fast_autocomplete.dawg import FindStep
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-WHAT_TO_PRINT = {'word', 'results', 'expected_results', 'result', 'expected_result', 'find_steps', 'expected_steps', 'search_results'}
+WHAT_TO_PRINT = {'word', 'results', 'expected_results', 'result', 'expected_result',
+                 'find_steps', 'expected_steps', 'search_results', 'search_results_immutable'}
+
+
+class Info(NamedTuple):
+    make: 'Info' = None
+    model: 'Info' = None
+    original_key: 'Info' = None
+
+    def get(self, key):
+        return getattr(self, key)
+
+    __get__ = get
 
 
 def parameterize_cases(cases):
@@ -48,6 +62,8 @@ def get_words(path):
 WIKIPEDIA_WORDS = get_words('fixtures/makes_models_from_wikipedia.csv')
 
 SHORT_WORDS = get_words('fixtures/makes_models_short.csv')
+
+SHORT_WORDS_IMMUTABLE_INFO = {key: Info(**value) for key, value in SHORT_WORDS.items()}
 
 
 with open(os.path.join(current_dir, 'fixtures/synonyms.json'), 'r') as the_file:
@@ -279,6 +295,17 @@ class TestAutocompleteWithSynonyms:
             assert expected_results == search_results
         else:
             assert [] == search_results
+
+    @pytest.mark.parametrize("word", [
+        'alf',
+    ])
+    def test_immutable_info(self, word):
+        auto_complete = AutoComplete(words=SHORT_WORDS, synonyms=SYNONYMS)
+        auto_complete_immutable = AutoComplete(words=SHORT_WORDS_IMMUTABLE_INFO, synonyms=SYNONYMS)
+        search_results = auto_complete._find(word, max_cost=3, size=3)
+        search_results_immutable = auto_complete_immutable._find(word, max_cost=3, size=3)
+        print_results(locals())
+        assert search_results_immutable == search_results
 
 
 class AutoCompleteWithSynonymsShort(DrawGraphMixin, AutoComplete):

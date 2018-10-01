@@ -87,8 +87,16 @@ class AutoComplete:
     def _get_partial_synonyms_to_words(self):
         new_words = {}
         for key, value in self.words.items():
-            value = value.copy()
-            value[ORIGINAL_KEY] = key
+            # data is mutable so we copy
+            try:
+                value = value.copy()
+            # data must be named tuple
+            except Exception:
+                new_value = value._asdict()
+                new_value[ORIGINAL_KEY] = key
+                value = type(value)(**new_value)
+            else:
+                value[ORIGINAL_KEY] = key
             for syn_key, syns in self._partial_synonyms.items():
                 if key.startswith(syn_key):
                     for syn in syns:
