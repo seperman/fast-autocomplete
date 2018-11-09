@@ -21,8 +21,8 @@ class Info(NamedTuple):
     model: 'Info' = None
     original_key: 'Info' = None
 
-    def get(self, key):
-        return getattr(self, key)
+    def get(self, key, default=None):
+        return getattr(self, key, default)
 
     __get__ = get
 

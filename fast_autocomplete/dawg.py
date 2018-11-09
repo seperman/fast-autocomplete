@@ -344,6 +344,8 @@ class _DawgNode:
     set of words.
     """
 
+    __slots__ = ("word", "original_key", "children")
+
     def __init__(self):
         self.word = None
         self.original_key = None
