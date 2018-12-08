@@ -21,8 +21,8 @@ class Info(NamedTuple):
     model: 'Info' = None
     original_key: 'Info' = None
 
-    def get(self, key):
-        return getattr(self, key)
+    def get(self, key, default=None):
+        return getattr(self, key, default)
 
     __get__ = get
 
@@ -75,12 +75,7 @@ class TestAutocomplete:
     @pytest.mark.parametrize("word, max_cost, size, expected_results", [
         ('bmw', 2, 3, {0: [['bmw']], 1: [['bmw e9'], ['bmw e3'], ['bmw m1'], ['bmw z1']]}),
         ('beemer', 2, 3, {}),
-        ('honda covic', 2, 3, {0: [['honda']],
-                               1: [['honda', 'civic'],
-                                   ['honda city'],
-                                   ['honda civic'],
-                                   ['honda crider'],
-                                   ['honda clarity']]}),
+        ('honda covic', 2, 3, {0: [['honda']], 1: [['honda', 'civic'], ['honda', 'civic type r']]}),
     ])
     def test_search_without_synonyms(self, word, max_cost, size, expected_results):
         auto_complete = AutoComplete(words=WIKIPEDIA_WORDS)
@@ -264,6 +259,13 @@ SEARCH_CASES = [
      'expected_steps': STEP_DESCENDANTS_ONLY,
      'expected_find_and_sort_results': [['toyota', 'toyota camry', '2018']],
      },
+    {'word': 'type r',
+     'max_cost': 3,
+     'size': 5,
+     'expected_find_results': {0: [['type', 'type r']]},
+     'expected_steps': STEP_DESCENDANTS_ONLY,
+     'expected_find_and_sort_results': [['type', 'type r']],
+     },
 ]
 
 
@@ -342,6 +344,7 @@ class TestPrefixAndDescendants:
         ('200 chrysler', '', '', ['200', 'chrysler'], 'c,h,r,y,s,l,e,r'),
         ('200 chrysler 200', '', '', ['200', 'chrysler', 'chrysler 200'], 'c,h,r,y,s,l,e,r, ,2,0,0'),
         ('chrysler 2007', '', '', ['chrysler', '2007'], '2,0,0,7'),
+        ('type r', '', '', ['type', 'type r'], 't,y,p,e, ,r'),
     ])
     def test_prefix_autofill(self, word, expected_matched_prefix_of_last_word,
                              expected_rest_of_word, expected_matched_words, expected_node_path):
