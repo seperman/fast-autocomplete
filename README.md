@@ -1,4 +1,4 @@
-# Fast Autocomplete 0.1.3
+# Fast Autocomplete 0.1.4
 
 Fast autocomplete using Directed Acyclic Word Graph (DAWG) and Levenshtein Edit Distance.
 
