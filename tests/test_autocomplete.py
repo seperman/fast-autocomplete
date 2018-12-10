@@ -56,6 +56,8 @@ def get_words(path):
                     words[word] = dict(line)
         if make not in words:
             words[make] = {"make": make}
+
+    words['truck'] = {'make': 'truck'}
     return words
 
 
@@ -265,6 +267,20 @@ SEARCH_CASES = [
      'expected_find_results': {0: [['type', 'type r']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
      'expected_find_and_sort_results': [['type', 'type r']],
+     },
+    {'word': 'truck',
+     'max_cost': 3,
+     'size': 5,
+     'expected_find_results': {0: [['truck']]},
+     'expected_steps': STEP_DESCENDANTS_ONLY,
+     'expected_find_and_sort_results': [['truck']],
+     },
+    {'word': 'trucks',
+     'max_cost': 3,
+     'size': 5,
+     'expected_find_results': {0: [['truck']]},
+     'expected_steps': STEP_DESCENDANTS_ONLY,
+     'expected_find_and_sort_results': [['truck']],
      },
 ]
 

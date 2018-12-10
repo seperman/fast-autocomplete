@@ -380,7 +380,8 @@ class _DawgNode:
         found_words_set = set()
 
         for letter, child_node in self.children.items():
-            que.append((letter, child_node))
+            if child_node is not self:
+                que.append((letter, child_node))
 
         while que:
             letter, child_node = que.popleft()
