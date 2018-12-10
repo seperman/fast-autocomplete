@@ -1,6 +1,6 @@
 # Fast Autocomplete 0.1.5
 
-Fast autocomplete using Directed Acyclic Word Graph (DAWG) and Levenshtein Edit Distance.
+Fast autocomplete using Directed Word Graph (DAWG) and Levenshtein Edit Distance.
 
 The results are cached via LFU (Least Frequently Used).
 
@@ -50,7 +50,7 @@ MIT
 
 The data structure we use in this library is called Dawg.
 
-DAWG stands for Directed Acyclic Word Graph. Here is an example DAWG based on the "makes_models_short.csv" that is provided in the tests:
+DAWG stands for Directed Word Graph. Here is an example DAWG based on the "makes_models_short.csv" that is provided in the tests:
 
 ![dawg](tests/animation/short.gif)
 
@@ -307,7 +307,7 @@ We try to maintain high standard in code coverage. Currently the `dawg` module's
 # FAQ
 
 ## Why DAWG
-DAWG stands for Directed Acyclic Word Graph. Originally we were using Trie-Tree structure. But soon it was obvious that some branches needed to  merge back to other branches. Such as `beemer` and `bmw` branches both need to end in the same node since they are synonyms. Thus we used DAWG.
+DAWG stands for Directed Word Graph. Originally we were using Trie-Tree structure. But soon it was obvious that some branches needed to  merge back to other branches. Such as `beemer` and `bmw` branches both need to end in the same node since they are synonyms. Thus we used DAWG.
 
 ## What are synonyms, clean synonyms and partial synonyms
 Synonyms are words that should produce the same results.

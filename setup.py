@@ -22,14 +22,16 @@ def get_reqs(filename):
 reqs = get_reqs("requirements.txt")
 
 try:
-    with open('README.rst') as file:
+    with open('README.md') as file:
         long_description = file.read()
 except Exception:
     long_description = "Autocomplete"
 
 setup(
     name='fast-autocomplete',
-    description=long_description,
+    description='Fast Autocomplete using Directed Word Graph',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Sep Dehpour',
     url='https://github.com/wearefair/fast-autocomplete',
     download_url='https://github.com/wearefair/fast-autocomplete/tarball/master',
