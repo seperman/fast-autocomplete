@@ -33,7 +33,7 @@ class AutoComplete:
                          The synonym words should only be here and not repeated in words parameter.
         """
         self._lock = Lock()
-        self._dawg = None
+        self._dwg = None
         self._raw_synonyms = synonyms or {}
         self._lfu_cache = LFUCache(self.CACHE_SIZE)
         self._clean_synonyms, self._partial_synonyms = self._get_clean_and_partial_synonyms()
@@ -41,7 +41,7 @@ class AutoComplete:
         self.words = words
         new_words = self._get_partial_synonyms_to_words()
         self.words.update(new_words)
-        self._populate_dawg()
+        self._populate_dwg()
 
     def _get_clean_and_partial_synonyms(self):
         """
@@ -104,11 +104,11 @@ class AutoComplete:
                         new_words[new_key] = value
         return new_words
 
-    def _populate_dawg(self):
-        if not self._dawg:
+    def _populate_dwg(self):
+        if not self._dwg:
             with self._lock:
-                if not self._dawg:
-                    self._dawg = _DawgNode()
+                if not self._dwg:
+                    self._dwg = _DawgNode()
                     for word, value in self.words.items():
                         original_key = value.get(ORIGINAL_KEY)
                         word = word.strip().lower()
@@ -129,8 +129,8 @@ class AutoComplete:
         """
         Inserts a word into the Dawg.
 
-        :param word: The word to be inserted as a branch of dawg
-        :param leaf_node: (optional) The leaf node for the node to merge into in the dawg.
+        :param word: The word to be inserted as a branch of dwg
+        :param leaf_node: (optional) The leaf node for the node to merge into in the dwg.
         :param add_word: (Boolean, default: True) Add the word itself at the end of the branch.
                           Usually this is set to False if we are merging into a leaf node and do not
                           want to add the actual word there.
@@ -140,10 +140,10 @@ class AutoComplete:
 
         """
         if leaf_node:
-            temp_leaf_node = self._dawg.insert(word[:-1], add_word=add_word, original_key=original_key)
+            temp_leaf_node = self._dwg.insert(word[:-1], add_word=add_word, original_key=original_key)
             temp_leaf_node.children[word[-1]] = leaf_node
         else:
-            leaf_node = self._dawg.insert(word, original_key=original_key)
+            leaf_node = self._dwg.insert(word, original_key=original_key)
         self.insert_word_callback(word)
         return leaf_node
 
@@ -281,7 +281,7 @@ class AutoComplete:
             word = matched_prefix_of_last_word + rest_of_word
             word = word.strip()
             len_prev_rest_of_last_word = len_rest_of_last_word
-            matched_prefix_of_last_word, rest_of_word, node, matched_words_part = self._prefix_autofill_part(word, node=self._dawg)
+            matched_prefix_of_last_word, rest_of_word, node, matched_words_part = self._prefix_autofill_part(word, node=self._dwg)
             is_added = _add_words(matched_words_part)
             if is_added is False:
                 break
@@ -291,7 +291,7 @@ class AutoComplete:
         return result
 
     def _prefix_autofill_part(self, word, node=None):
-        node = node or self._dawg
+        node = node or self._dwg
         que = collections.deque(word)
 
         matched_prefix_of_last_word = ''
@@ -316,7 +316,7 @@ class AutoComplete:
                     matched_words.append(node.value)
             else:
                 if char == ' ':
-                    node = self._dawg
+                    node = self._dwg
                 else:
                     que.appendleft(char)
                     break
@@ -377,10 +377,13 @@ class _DawgNode:
     def get_descendants_nodes(self, size):
 
         que = collections.deque()
+        unique_nodes = {self}
         found_words_set = set()
 
         for letter, child_node in self.children.items():
-            que.append((letter, child_node))
+            if child_node not in unique_nodes:
+                unique_nodes.add(child_node)
+                que.append((letter, child_node))
 
         while que:
             letter, child_node = que.popleft()
@@ -393,7 +396,9 @@ class _DawgNode:
                         break
 
             for letter, grand_child_node in child_node.children.items():
-                que.append((letter, grand_child_node))
+                if grand_child_node not in unique_nodes:
+                    unique_nodes.add(grand_child_node)
+                    que.append((letter, grand_child_node))
 
     def get_descendants_words(self, size):
         found_words_gen = self.get_descendants_nodes(size)

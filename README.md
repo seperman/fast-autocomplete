@@ -1,6 +1,6 @@
-# Fast Autocomplete 0.1.4
+# Fast Autocomplete 0.1.5
 
-Fast autocomplete using Directed Acyclic Word Graph (DAWG) and Levenshtein Edit Distance.
+Fast autocomplete using Directed Word Graph (DWG) and Levenshtein Edit Distance.
 
 The results are cached via LFU (Least Frequently Used).
 
@@ -21,7 +21,7 @@ You might say:
 
 In a nutshell, what the fast Autocomplete does is:
 
-1. Populate the DAWG with your words.
+1. Populate the DWG with your words.
 2. Follow the graph nodes letter by letter until it finds nodes that have words in them.
 3. Continue after words are found on the graph until it reaches the leaf node.
 4. Restart from the root node again until it reaches a letter that doesn't exist on the graph.
@@ -46,15 +46,15 @@ Are you still on Python 2? TIME TO UPGRADE.
 
 MIT
 
-# DAWG
+# DWG
 
 The data structure we use in this library is called Dawg.
 
-DAWG stands for Directed Acyclic Word Graph. Here is an example DAWG based on the "makes_models_short.csv" that is provided in the tests:
+DWG stands for Directed Word Graph. Here is an example DWG based on the "makes_models_short.csv" that is provided in the tests:
 
-![dawg](tests/animation/short.gif)
+![dwg](tests/animation/short.gif)
 
-![dawg](tests/AutoCompleteWithSynonymsShort_Graph.svg)
+![dwg](tests/AutoCompleteWithSynonymsShort_Graph.svg)
 
 
 # Usage
@@ -152,7 +152,7 @@ from fast_autocomplete import AutoComplete
 autocomplete = AutoComplete(words=words, synonyms=synonyms)
 ```
 
-At this point, AutoComplete has created a [dawg](#DAWG) structure.
+At this point, AutoComplete has created a [dwg](#DWG) structure.
 
 Now you can search!
 
@@ -228,11 +228,11 @@ converted to contexts:
 
 ## Draw
 
-This package can actually draw the dawgs as it is populating them or just once the dawg is populated for you!
-Here is the animation of populating the dawg with words from "makes_models_short.csv":
+This package can actually draw the dwgs as it is populating them or just once the dwg is populated for you!
+Here is the animation of populating the dwg with words from "makes_models_short.csv":
 
 
-### Draw animation of dawg populating
+### Draw animation of dwg populating
 
 ```py
 from fast_autocomplete import AutoComplete, DrawGraphMixin
@@ -247,14 +247,14 @@ class AutoCompleteDraw(DrawGraphMixin, AutoComplete):
 autocomplete = AutoCompleteDraw(words=words, synonyms=synonyms)
 ```
 
-As soon as you initialize the above AutoCompleteDraw class, it will populate the dawg and generate the animation!
-For an example of this code properly setup, take a look at the tests. In fact the animation in the [dawg](#dawg) section is generated the same way via unit tests!
+As soon as you initialize the above AutoCompleteDraw class, it will populate the dwg and generate the animation!
+For an example of this code properly setup, take a look at the tests. In fact the animation in the [dwg](#dwg) section is generated the same way via unit tests!
 
-Note that if you have many words, the graph file will be big. Instead of drawing all frames as the dawg is being populated, you can just draw the final stage:
+Note that if you have many words, the graph file will be big. Instead of drawing all frames as the dwg is being populated, you can just draw the final stage:
 
 ### Draw the final graph
 
-To draw just one graph that shows the final stage of the dawg, use the draw mixin and run the draw_graph function:
+To draw just one graph that shows the final stage of the dwg, use the draw mixin and run the draw_graph function:
 
 ```py
 from fast_autocomplete import AutoComplete, DrawGraphMixin
@@ -289,7 +289,7 @@ demo(autocomplete, max_cost=3, size=5)
 
 `pytest`
 
-We try to maintain high standard in code coverage. Currently the `dawg` module's coverage is around 99%!
+We try to maintain high standard in code coverage. Currently the `dwg` module's coverage is around 99%!
 
 
 # Authors
@@ -306,8 +306,8 @@ We try to maintain high standard in code coverage. Currently the `dawg` module's
 
 # FAQ
 
-## Why DAWG
-DAWG stands for Directed Acyclic Word Graph. Originally we were using Trie-Tree structure. But soon it was obvious that some branches needed to  merge back to other branches. Such as `beemer` and `bmw` branches both need to end in the same node since they are synonyms. Thus we used DAWG.
+## Why DWG
+DWG stands for Directed Word Graph. Originally we were using Trie-Tree structure. But soon it was obvious that some branches needed to  merge back to other branches. Such as `beemer` and `bmw` branches both need to end in the same node since they are synonyms. Thus we used DWG.
 
 ## What are synonyms, clean synonyms and partial synonyms
 Synonyms are words that should produce the same results.
@@ -324,10 +324,10 @@ Internally these 2 types of synonyms are treated differently but as a user of th
 
 ## Why do you have a whole subtree for partial synonyms
 Q: Partial synonym means the synonym is a part of the original word. Such as `alfa` is a partial synonym for `alfa romeo`.
-In that case you are inserting both `alfa` and `alfa romeo` in the dawg. `alfa` will have `alfa 4c` and `alpha romeo` will have `alfa romeo 4c` branches. Why not just have `alfa` branches to be `alfa romeo` and from there you will have automatically all the sub branches of `alfa romeo`.
+In that case you are inserting both `alfa` and `alfa romeo` in the dwg. `alfa` will have `alfa 4c` and `alpha romeo` will have `alfa romeo 4c` branches. Why not just have `alfa` branches to be `alfa romeo` and from there you will have automatically all the sub branches of `alfa romeo`.
 
-Answer: We use letters for edges. So `alfa` can have only one edge coming out of it that is space (` `). And that edge is going to a node that has sub-branches to `alfa romoe`, `alfa 4c` etc. It can't have a ` ` going to that node and another ` ` going to `alfa romeo`'s immediate child. That way when we are traversing the dawg for the input of `alfa 4` we get to the correct node.
+Answer: We use letters for edges. So `alfa` can have only one edge coming out of it that is space (` `). And that edge is going to a node that has sub-branches to `alfa romoe`, `alfa 4c` etc. It can't have a ` ` going to that node and another ` ` going to `alfa romeo`'s immediate child. That way when we are traversing the dwg for the input of `alfa 4` we get to the correct node.
 
 ## I put Toyota in the Dawg but when I type `toy`, it doesn't show up.
 
-Answer: If you put `Toyota` with capital T in the dawg, it expects the search word to start with capital T too. We suggest that you lower case everything before putting them in dawg. Fast-autocomplete does not automatically do that for you since it assumes the `words` dictionary is what you want to be put in the dawg. It is up to you to clean your own data before putting it in the dawg.
+Answer: If you put `Toyota` with capital T in the dwg, it expects the search word to start with capital T too. We suggest that you lower case everything before putting them in dwg. Fast-autocomplete does not automatically do that for you since it assumes the `words` dictionary is what you want to be put in the dwg. It is up to you to clean your own data before putting it in the dwg.
