@@ -377,10 +377,12 @@ class _DawgNode:
     def get_descendants_nodes(self, size):
 
         que = collections.deque()
+        unique_nodes = {self}
         found_words_set = set()
 
         for letter, child_node in self.children.items():
-            if child_node is not self:
+            if child_node not in unique_nodes:
+                unique_nodes.add(child_node)
                 que.append((letter, child_node))
 
         while que:
@@ -394,7 +396,9 @@ class _DawgNode:
                         break
 
             for letter, grand_child_node in child_node.children.items():
-                que.append((letter, grand_child_node))
+                if grand_child_node not in unique_nodes:
+                    unique_nodes.add(grand_child_node)
+                    que.append((letter, grand_child_node))
 
     def get_descendants_words(self, size):
         found_words_gen = self.get_descendants_nodes(size)
