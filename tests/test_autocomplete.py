@@ -7,7 +7,7 @@ from typing import NamedTuple
 from pprint import pprint
 from fast_autocomplete.misc import read_csv_gen
 from fast_autocomplete import AutoComplete, DrawGraphMixin
-from fast_autocomplete.dawg import FindStep
+from fast_autocomplete.dwg import FindStep
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -374,7 +374,7 @@ class TestPrefixAndDescendants:
         print(f'node: {node}')
         print(f'expected_matched_words: {expected_matched_words}')
         print(f'matched_words: {matched_words}')
-        expected_node = auto_complete._dawg
+        expected_node = auto_complete._dwg
         for k in expected_node_path.split(','):
             expected_node = expected_node[k]
         assert expected_node is node

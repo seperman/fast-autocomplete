@@ -26,7 +26,7 @@ class DrawGraphMixin:
 
         edges = set()
         que = collections.deque()
-        que.append(('root', self._dawg, ''))
+        que.append(('root', self._dwg, ''))
         node_alternative_names = {}
         while que:
             parent_name, node, edge_name = que.popleft()
