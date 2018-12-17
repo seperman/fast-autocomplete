@@ -336,6 +336,25 @@ class AutoComplete:
             results[distance].extend(extended)
         return distance
 
+    def _node_word_info_matches_condition(self, node, condition):
+        _word = node.word
+        word_info = self.words.get(_word)
+        if word_info:
+            return condition(word_info)
+        else:
+            return False
+
+    def get_all_descendent_words_for_condition(self, word, size, condition):
+        new_tokens = []
+
+        matched_prefix_of_last_word, rest_of_word, node, matched_words_part = self._prefix_autofill_part(word=word)
+        if not rest_of_word and self._node_word_info_matches_condition(node, condition):
+            found_nodes_gen = node.get_descendants_nodes(size)
+            for node in found_nodes_gen:
+                if self._node_word_info_matches_condition(node, condition):
+                    new_tokens.append(node.word)
+        return new_tokens
+
 
 class _DawgNode:
     """
@@ -402,5 +421,4 @@ class _DawgNode:
 
     def get_descendants_words(self, size):
         found_words_gen = self.get_descendants_nodes(size)
-        for i in found_words_gen:
-            yield i.value
+        return map(lambda x: x.value, found_words_gen)
