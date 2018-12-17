@@ -12,7 +12,7 @@ from fast_autocomplete.dwg import FindStep
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-WHAT_TO_PRINT = {'word', 'results', 'expected_results', 'result', 'expected_result',
+WHAT_TO_PRINT = {'word', 'results', 'expected_results', 'result',
                  'find_steps', 'expected_steps', 'search_results', 'search_results_immutable'}
 
 
@@ -382,17 +382,31 @@ class TestPrefixAndDescendants:
         assert expected_rest_of_word == rest_of_word
         assert expected_matched_words == matched_words
 
-    @pytest.mark.parametrize("word, expected_result", [
+    @pytest.mark.parametrize("word, expected_results", [
         ('2018 alpha ', ['alfa', 'alfa rl', 'alfa rm']),
         ('1 series bmw 2', ['bmw 2 series']),
         ('2018 alfa', ['alfa rl', 'alfa rm', 'alfa 4c']),
     ])
-    def test_get_descendants_nodes(self, word, expected_result):
+    def test_get_descendants_nodes(self, word, expected_results):
         auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
         matched_prefix_of_last_word, rest_of_word, node, matched_words = auto_complete._prefix_autofill(word)
         found_words_gen = node.get_descendants_nodes(size=2)
         found_words = [_node.word for _node in found_words_gen]
         print(f'word: {word}')
-        print(f'expected_result: {expected_result}')
+        print(f'expected_results: {expected_results}')
         print(f'found_words: {found_words}')
-        assert expected_result == list(found_words)
+        assert expected_results == list(found_words)
+
+    @pytest.mark.parametrize("word, expected_results", [
+        ('r', ['rc', 'rx', 'r8', 'rl', 'rm', 'rav4', 'r107', 'r129', 'r170', 'r171', 'r230']),
+        ('benz', []),
+    ])
+    def test_get_all_descendent_words_for_condition(self, word, expected_results):
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
+
+        def condition(word_info):
+            return 'model' in word_info
+
+        results = auto_complete.get_all_descendent_words_for_condition(word=word, size=10, condition=condition)
+        print_results(locals())
+        assert expected_results == results
