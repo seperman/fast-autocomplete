@@ -219,6 +219,9 @@ class AutoComplete:
             word_chunks = collections.deque(filter(lambda x: x, last_word.split(' ')))
             new_word = word_chunks.popleft()
 
+            # TODO: experiment with the number here
+            # 'in los angeles' gets cut into `in los` so it becomes a closer match to `in lodi`
+            # but if the number was bigger, we could have matched with `in los angeles`
             while len(new_word) < 5 and word_chunks:
                 new_word = f'{new_word} {word_chunks.popleft()}'
             fuzzy_rest_of_word = ' '.join(word_chunks)
