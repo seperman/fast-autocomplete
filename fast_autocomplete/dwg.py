@@ -159,7 +159,7 @@ class AutoComplete:
                     if reversed_item:
                         output_items[i] = reversed_item
                     elif item not in self.words:
-                        output_items[i] = None
+                        output_items[i] = item
                 output_items_str = DELIMITER.join(output_items)
                 if output_items and output_items_str not in output_keys_set:
                     output_keys_set.add(output_items_str)
@@ -275,7 +275,7 @@ class AutoComplete:
                     is_added = True
             return is_added
 
-        matched_prefix_of_last_word, rest_of_word, node, matched_words_part = self._prefix_autofill_part(word, node)
+        matched_prefix_of_last_word, rest_of_word, node, matched_words_part, matched_condition_ever, matched_condition_in_branch = self._prefix_autofill_part(word, node)
         _add_words(matched_words_part)
         result = (matched_prefix_of_last_word, rest_of_word, node, matched_words)
         len_rest_of_last_word = len(rest_of_word)
@@ -284,7 +284,7 @@ class AutoComplete:
             word = matched_prefix_of_last_word + rest_of_word
             word = word.strip()
             len_prev_rest_of_last_word = len_rest_of_last_word
-            matched_prefix_of_last_word, rest_of_word, node, matched_words_part = self._prefix_autofill_part(word, node=self._dwg)
+            matched_prefix_of_last_word, rest_of_word, node, matched_words_part, matched_condition_ever, matched_condition_in_branch = self._prefix_autofill_part(word, node=self._dwg, matched_condition_ever=matched_condition_ever, matched_condition_in_branch=matched_condition_in_branch)
             is_added = _add_words(matched_words_part)
             if is_added is False:
                 break
@@ -293,12 +293,32 @@ class AutoComplete:
 
         return result
 
-    def _prefix_autofill_part(self, word, node=None):
+    def prefix_autofill_part_condition(self, node):
+        pass
+
+    PREFIX_AUTOFILL_PART_CONDITION_SUFFIX = ''
+
+    def _add_to_matched_words(self, node, matched_words, matched_condition_in_branch, matched_condition_ever, matched_prefix_of_last_word):
+        if matched_words:
+            last_matched_word = matched_words[-1].replace(self.PREFIX_AUTOFILL_PART_CONDITION_SUFFIX, '')
+            if node.value.startswith(last_matched_word):
+                matched_words.pop()
+        value = node.value
+        if self.PREFIX_AUTOFILL_PART_CONDITION_SUFFIX:
+            if self._node_word_info_matches_condition(node, self.prefix_autofill_part_condition):
+                matched_condition_in_branch = True
+                if matched_condition_ever and matched_prefix_of_last_word:
+                    value = f"{matched_prefix_of_last_word}{self.PREFIX_AUTOFILL_PART_CONDITION_SUFFIX}"
+        matched_words.append(value)
+        return matched_words, matched_condition_in_branch
+
+    def _prefix_autofill_part(self, word, node=None, matched_condition_ever=False, matched_condition_in_branch=False):
         node = node or self._dwg
         que = collections.deque(word)
 
         matched_prefix_of_last_word = ''
         matched_words = []
+        nodes_that_words_were_extracted = set()
 
         while que:
             char = que.popleft()
@@ -315,22 +335,27 @@ class AutoComplete:
                         next_char = que[0]
                         if next_char != ' ':
                             continue
+                    matched_words, matched_condition_in_branch = self._add_to_matched_words(node, matched_words, matched_condition_in_branch, matched_condition_ever, matched_prefix_of_last_word)
+                    nodes_that_words_were_extracted.add(node)
                     matched_prefix_of_last_word = ''
-                    matched_words.append(node.value)
             else:
                 if char == ' ':
                     node = self._dwg
+                    if matched_condition_in_branch:
+                        matched_condition_ever = True
                 else:
                     que.appendleft(char)
                     break
 
-        if not que and node.word:
+        if not que and node.word and node not in nodes_that_words_were_extracted:
+            matched_words, matched_condition_in_branch = self._add_to_matched_words(node, matched_words, matched_condition_in_branch, matched_condition_ever, matched_prefix_of_last_word)
             matched_prefix_of_last_word = ''
-            matched_words.append(node.value)
 
         rest_of_word = "".join(que)
+        if matched_condition_in_branch:
+            matched_condition_ever = True
 
-        return matched_prefix_of_last_word, rest_of_word, node, matched_words
+        return matched_prefix_of_last_word, rest_of_word, node, matched_words, matched_condition_ever, matched_condition_in_branch
 
     def _add_descendants_words_to_results(self, node, size, matched_words, results, distance):
         descendant_words = list(node.get_descendants_words(size))
@@ -350,7 +375,7 @@ class AutoComplete:
     def get_all_descendent_words_for_condition(self, word, size, condition):
         new_tokens = []
 
-        matched_prefix_of_last_word, rest_of_word, node, matched_words_part = self._prefix_autofill_part(word=word)
+        matched_prefix_of_last_word, rest_of_word, node, matched_words_part, matched_condition_ever, matched_condition_in_branch = self._prefix_autofill_part(word=word)
         if not rest_of_word and self._node_word_info_matches_condition(node, condition):
             found_nodes_gen = node.get_descendants_nodes(size)
             for node in found_nodes_gen:
