@@ -1,4 +1,4 @@
-# Fast Autocomplete 0.1.7
+# Fast Autocomplete 0.2.0
 
 Fast autocomplete using Directed Word Graph (DWG) and Levenshtein Edit Distance.
 
