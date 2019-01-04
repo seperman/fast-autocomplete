@@ -8,7 +8,7 @@ class DrawGraphMixin:
     DRAW_POPULATION_ANIMATION_FILENO_PADDING = 6
     SHOW_OBJ_IDS_OF_WORDS = {}
 
-    def draw_graph(self, file_path):
+    def draw_graph(self, file_path, agraph_kwargs=None):
         """
         Draws the graph of autocomplete words.
 
@@ -22,7 +22,8 @@ class DrawGraphMixin:
         except ImportError:
             print('You need to install pygraphviz in order to draw graphs')
 
-        graph = pgv.AGraph(strict=False, directed=True)
+        agraph_kwargs = agraph_kwargs if agraph_kwargs else {}
+        graph = pgv.AGraph(strict=False, directed=True, **agraph_kwargs)
 
         edges = set()
         que = collections.deque()
