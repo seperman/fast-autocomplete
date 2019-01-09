@@ -8,7 +8,7 @@ class DrawGraphMixin:
     DRAW_POPULATION_ANIMATION_FILENO_PADDING = 6
     SHOW_OBJ_IDS_OF_WORDS = {}
 
-    def draw_graph(self, file_path, agraph_kwargs=None):
+    def draw_graph(self, file_path, starting_word=None, agraph_kwargs=None, prog='dot'):
         """
         Draws the graph of autocomplete words.
 
@@ -16,6 +16,10 @@ class DrawGraphMixin:
 
         - file_path: the full path to the file to save the graph into.
         Graphviz library will determine the format of the file based on the extension you choose.
+        - starting_word: what word to start from. All descendants of the this word will be in the graph.
+        If left as None, the graph will start from the rootn node.
+        - agraph_kwargs: kwargs that will be pased to PyGraphViz Agraph creator. You can control how the graph
+        will be rendered using these kwargs.
         """
         try:
             import pygraphviz as pgv
@@ -27,7 +31,13 @@ class DrawGraphMixin:
 
         edges = set()
         que = collections.deque()
-        que.append(('root', self._dwg, ''))
+        if starting_word:
+            matched_prefix_of_last_word, rest_of_word, new_node, matched_words = self._prefix_autofill(word=starting_word)
+            matched_word = matched_words[-1]
+        else:
+            new_node = self._dwg
+            matched_word = 'root'
+        que.append((matched_word, new_node, ''))
         node_alternative_names = {}
         while que:
             parent_name, node, edge_name = que.popleft()
@@ -49,7 +59,7 @@ class DrawGraphMixin:
                 graph.add_edge(*edge, color='blue', label=edge_name)
                 for edge_name, child in node.children.items():
                     que.append((node_name, child, edge_name))
-        graph.draw(file_path, prog='dot')
+        graph.draw(file_path, prog=prog)
 
     def insert_word_callback(self, word):
         """

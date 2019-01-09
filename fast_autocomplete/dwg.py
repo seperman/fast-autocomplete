@@ -197,13 +197,14 @@ class AutoComplete:
         The search function returns a list of all words that are less than the given
         maximum distance from the target word
         """
-
         results = defaultdict(list)
         fuzzy_matches = defaultdict(list)
         rest_of_results = {}
         fuzzy_matches_len = 0
 
         fuzzy_min_distance = min_distance = INF
+        # if word == 'mercedes s':
+        #     import pytest; pytest.set_trace()
         matched_prefix_of_last_word, rest_of_word, new_node, matched_words = self._prefix_autofill(word=word)
 
         last_word = matched_prefix_of_last_word + rest_of_word
