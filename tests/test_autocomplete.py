@@ -282,6 +282,13 @@ SEARCH_CASES = [
      'expected_steps': STEP_DESCENDANTS_ONLY,
      'expected_find_and_sort_results': [['truck']],
      },
+    {'word': '1se',
+     'max_cost': 3,
+     'size': 5,
+     'expected_find_results': {1: [['1 series']]},
+     'expected_steps': STEP_DESCENDANTS_ONLY,
+     'expected_find_and_sort_results': [['1 series']],
+     },
 ]
 
 

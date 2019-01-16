@@ -326,8 +326,12 @@ class AutoComplete:
 
             if node.children:
                 if char not in node.children:
-                    que.appendleft(char)
-                    break
+                    space_child = node.children.get(' ')
+                    if space_child and char in space_child.children:
+                        node = space_child
+                    else:
+                        que.appendleft(char)
+                        break
                 node = node.children[char]
                 if char != ' ' or matched_prefix_of_last_word:
                     matched_prefix_of_last_word += char
