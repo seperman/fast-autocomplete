@@ -39,7 +39,7 @@ class AutoComplete:
         self._lfu_cache = LFUCache(self.CACHE_SIZE)
         self._clean_synonyms, self._partial_synonyms = self._get_clean_and_partial_synonyms()
         self._reverse_synonyms = self._get_reverse_synonyms(self._clean_synonyms)
-        self._full_stop_words = frozenset(full_stop_words) if full_stop_words else None
+        self._full_stop_words = set(full_stop_words) if full_stop_words else None
         self.logger = logger
         self.words = words
         new_words = self._get_partial_synonyms_to_words()
@@ -373,7 +373,7 @@ class AutoComplete:
         return matched_prefix_of_last_word, rest_of_word, node, matched_words, matched_condition_ever, matched_condition_in_branch
 
     def _add_descendants_words_to_results(self, node, size, matched_words, results, distance, go_deep=True):
-        descendant_words = list(node.get_descendants_words(size, go_deep))
+        descendant_words = list(node.get_descendants_words(size, go_deep, full_stop_words=self._full_stop_words))
         extended = _extend_and_repeat(matched_words, descendant_words)
         if extended:
             results[distance].extend(extended)
@@ -436,11 +436,12 @@ class _DawgNode:
     def __repr__(self):
         return f'< children: {list(self.children.keys())}, word: {self.word} >'
 
-    def get_descendants_nodes(self, size, go_deep=True):
+    def get_descendants_nodes(self, size, go_deep=True, full_stop_words=None):
 
         que = collections.deque()
         unique_nodes = {self}
         found_words_set = set()
+        full_stop_words = full_stop_words if full_stop_words else set()
 
         for letter, child_node in self.children.items():
             if child_node not in unique_nodes:
@@ -451,6 +452,8 @@ class _DawgNode:
             letter, child_node = que.popleft()
             child_value = child_node.value
             if child_value:
+                if child_value in full_stop_words:
+                    go_deep = False
                 if child_value not in found_words_set:
                     found_words_set.add(child_value)
                     yield child_node
@@ -463,6 +466,6 @@ class _DawgNode:
                         unique_nodes.add(grand_child_node)
                         que.append((letter, grand_child_node))
 
-    def get_descendants_words(self, size, go_deep=True):
-        found_words_gen = self.get_descendants_nodes(size, go_deep)
+    def get_descendants_words(self, size, go_deep=True, full_stop_words=None):
+        found_words_gen = self.get_descendants_nodes(size, go_deep=go_deep, full_stop_words=full_stop_words)
         return map(lambda x: x.value, found_words_gen)
