@@ -4,6 +4,7 @@ from threading import Lock
 from collections import defaultdict
 from fast_autocomplete.lfucache import LFUCache
 from fast_autocomplete.misc import _extend_and_repeat
+from fast_autocomplete.normalize import normalize_node_name
 from Levenshtein import distance as levenshtein_distance
 
 DELIMITER = '__'
@@ -174,7 +175,7 @@ class AutoComplete:
         - max_cost: Maximum Levenshtein edit distance to be considered when calculating results
         - size: The max number of results to return
         """
-        word = word.lower().strip()
+        word = normalize_node_name(word)
         if not word:
             return []
         key = f'{word}-{max_cost}-{size}'
@@ -203,9 +204,10 @@ class AutoComplete:
         fuzzy_matches_len = 0
 
         fuzzy_min_distance = min_distance = INF
-        # if word == 'mercedes s':
-        #     import pytest; pytest.set_trace()
         matched_prefix_of_last_word, rest_of_word, new_node, matched_words = self._prefix_autofill(word=word)
+
+        if matched_words and matched_words[-1] == 'bmw' and not rest_of_word:
+            print('!!!!!!')
 
         last_word = matched_prefix_of_last_word + rest_of_word
 
