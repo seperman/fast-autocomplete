@@ -195,6 +195,9 @@ class AutoComplete:
     def _is_enough_results(results, size):
         return AutoComplete._len_results(results) >= size
 
+    def _is_stop_word_condition(self, matched_words, matched_prefix_of_last_word):
+        return (self._full_stop_words and matched_words and matched_words[-1] in self._full_stop_words and not matched_prefix_of_last_word)
+
     def _find(self, word, max_cost, size, call_count=0):
         """
         The search function returns a list of all words that are less than the given
@@ -214,7 +217,7 @@ class AutoComplete:
             results[0] = [matched_words.copy()]
             min_distance = 0
             # under certain condition with finding full stop words, do not bother with finding more matches
-            if (self._full_stop_words and matched_words and matched_words[-1] in self._full_stop_words and not matched_prefix_of_last_word):
+            if self._is_stop_word_condition(matched_words, matched_prefix_of_last_word):
                 find_steps = [FindStep.start]
                 return results, find_steps
         if len(rest_of_word) < 3:
@@ -257,7 +260,9 @@ class AutoComplete:
                             results[fuzzy_min_distance].append(matched_words + [_word] + _rest_of_matched_word)
                     else:
                         results[fuzzy_min_distance].append(matched_words + [_word])
-                        not_used_matched_prefix_of_last_word, not_used_rest_of_word, fuzzy_new_node, not_used_matched_words = self._prefix_autofill(word=_word)
+                        _matched_prefix_of_last_word_b, not_used_rest_of_word, fuzzy_new_node, _matched_words_b = self._prefix_autofill(word=_word)
+                        if self._is_stop_word_condition(matched_words=_matched_words_b, matched_prefix_of_last_word=_matched_prefix_of_last_word_b):
+                            break
                         self._add_descendants_words_to_results(node=fuzzy_new_node, size=size, matched_words=matched_words, results=results, distance=fuzzy_min_distance)
 
             if matched_words and not self._is_enough_results(results, size):
