@@ -25,7 +25,7 @@ class AutoComplete:
 
     CACHE_SIZE = 2048
 
-    def __init__(self, words, synonyms=None):
+    def __init__(self, words, synonyms=None, full_stop_words=None, logger=None):
         """
         Inistializes the Autocomplete module
 
@@ -39,6 +39,8 @@ class AutoComplete:
         self._lfu_cache = LFUCache(self.CACHE_SIZE)
         self._clean_synonyms, self._partial_synonyms = self._get_clean_and_partial_synonyms()
         self._reverse_synonyms = self._get_reverse_synonyms(self._clean_synonyms)
+        self._full_stop_words = frozenset(full_stop_words) if full_stop_words else None
+        self.logger = logger
         self.words = words
         new_words = self._get_partial_synonyms_to_words()
         self.words.update(new_words)
@@ -206,14 +208,15 @@ class AutoComplete:
         fuzzy_min_distance = min_distance = INF
         matched_prefix_of_last_word, rest_of_word, new_node, matched_words = self._prefix_autofill(word=word)
 
-        if matched_words and matched_words[-1] == 'bmw' and not rest_of_word:
-            print('!!!!!!')
-
         last_word = matched_prefix_of_last_word + rest_of_word
 
         if matched_words:
             results[0] = [matched_words.copy()]
             min_distance = 0
+            # under certain condition with finding full stop words, do not bother with finding more matches
+            if (self._full_stop_words and matched_words and matched_words[-1] in self._full_stop_words and not matched_prefix_of_last_word):
+                find_steps = [FindStep.start]
+                return results, find_steps
         if len(rest_of_word) < 3:
             find_steps = [FindStep.descendants_only]
             self._add_descendants_words_to_results(node=new_node, size=size, matched_words=matched_words, results=results, distance=1)
@@ -364,8 +367,8 @@ class AutoComplete:
 
         return matched_prefix_of_last_word, rest_of_word, node, matched_words, matched_condition_ever, matched_condition_in_branch
 
-    def _add_descendants_words_to_results(self, node, size, matched_words, results, distance):
-        descendant_words = list(node.get_descendants_words(size))
+    def _add_descendants_words_to_results(self, node, size, matched_words, results, distance, go_deep=True):
+        descendant_words = list(node.get_descendants_words(size, go_deep))
         extended = _extend_and_repeat(matched_words, descendant_words)
         if extended:
             results[distance].extend(extended)
@@ -428,7 +431,7 @@ class _DawgNode:
     def __repr__(self):
         return f'< children: {list(self.children.keys())}, word: {self.word} >'
 
-    def get_descendants_nodes(self, size):
+    def get_descendants_nodes(self, size, go_deep=True):
 
         que = collections.deque()
         unique_nodes = {self}
@@ -449,11 +452,12 @@ class _DawgNode:
                     if len(found_words_set) > size:
                         break
 
-            for letter, grand_child_node in child_node.children.items():
-                if grand_child_node not in unique_nodes:
-                    unique_nodes.add(grand_child_node)
-                    que.append((letter, grand_child_node))
+            if go_deep:
+                for letter, grand_child_node in child_node.children.items():
+                    if grand_child_node not in unique_nodes:
+                        unique_nodes.add(grand_child_node)
+                        que.append((letter, grand_child_node))
 
-    def get_descendants_words(self, size):
-        found_words_gen = self.get_descendants_nodes(size)
+    def get_descendants_words(self, size, go_deep=True):
+        found_words_gen = self.get_descendants_nodes(size, go_deep)
         return map(lambda x: x.value, found_words_gen)
