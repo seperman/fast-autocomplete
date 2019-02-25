@@ -20,6 +20,24 @@ def normalize_node_name(name):
     return result
 
 
+def _remove_invalid_chars(x):
+    result = x in valid_chars_for_node_name
+    if x == '-' == _remove_invalid_chars.prev_x:
+        result = False
+    _remove_invalid_chars.prev_x = x
+    return result
+
+
+def remove_any_special_character(name):
+    """
+    Only remove invalid characters from a name. Useful for cleaning the user's original word.
+    """
+    name = name.lower()[:MAX_WORD_LENGTH]
+    _remove_invalid_chars.prev_x = ''
+
+    return ''.join(filter(_remove_invalid_chars, name)).strip()
+
+
 def _get_normalized_node_name(name):
     name = name.lower()
     result = []
