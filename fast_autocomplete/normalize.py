@@ -35,7 +35,7 @@ def remove_any_special_character(name):
     name = name.lower()[:MAX_WORD_LENGTH]
     _remove_invalid_chars.prev_x = ''
 
-    return ''.join(filter(_remove_invalid_chars, name))
+    return ''.join(filter(_remove_invalid_chars, name)).strip()
 
 
 def _get_normalized_node_name(name):
