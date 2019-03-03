@@ -172,9 +172,11 @@ class AutoComplete:
 
     def get_tokens_flat_list(self, word, max_cost=3, size=10):
         """
-        Gets a flast list of tokens
+        Gets a flast list of tokens.
+        This requires the original search function from this class to be run,
+        instead of subclasses of AutoComplete.
         """
-        result = self.search(word, max_cost=max_cost, size=size)
+        result = AutoComplete.search(self, word, max_cost=max_cost, size=size)
         return [item for sublist in result for item in sublist]
 
     def search(self, word, max_cost=2, size=5):
