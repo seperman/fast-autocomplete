@@ -170,6 +170,13 @@ class AutoComplete:
                     if len(output_keys_set) >= size:
                         return
 
+    def get_tokens_flat_list(self, word, max_cost=3, size=10):
+        """
+        Gets a flast list of tokens
+        """
+        result = self.search(word, max_cost=max_cost, size=size)
+        return [item for sublist in result for item in sublist]
+
     def search(self, word, max_cost=2, size=5):
         """
         parameters:

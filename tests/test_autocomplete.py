@@ -417,3 +417,17 @@ class TestPrefixAndDescendants:
         results = auto_complete.get_all_descendent_words_for_condition(word=word, size=10, condition=condition)
         print_results(locals())
         assert expected_results == results
+
+
+class TestFlatTokens:
+
+    @pytest.mark.parametrize("word, expected_results", [
+        ('bmw', ['bmw']),
+        ('al', ['alfa romeo']),
+    ])
+    def test_get_all_descendent_words_for_condition(self, word, expected_results):
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS, full_stop_words=['bmw', 'alfa romeo'])
+
+        results = auto_complete.get_tokens_flat_list(word, max_cost=0, size=3)
+        print_results(locals())
+        assert expected_results == results
