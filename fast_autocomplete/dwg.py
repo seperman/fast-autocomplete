@@ -179,6 +179,13 @@ class AutoComplete:
         result = AutoComplete.search(self, word, max_cost=max_cost, size=size)
         return [item for sublist in result for item in sublist]
 
+    def get_word_context(self, word):
+        """
+        Gets the word's context from the words dictionary
+        """
+        word = normalize_node_name(word)
+        return self.words.get(word)
+
     def search(self, word, max_cost=2, size=5):
         """
         parameters:

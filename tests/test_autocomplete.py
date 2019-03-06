@@ -419,7 +419,7 @@ class TestPrefixAndDescendants:
         assert expected_results == results
 
 
-class TestFlatTokens:
+class TestOther:
 
     @pytest.mark.parametrize("word, expected_results", [
         ('bmw', ['bmw']),
@@ -429,5 +429,16 @@ class TestFlatTokens:
         auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS, full_stop_words=['bmw', 'alfa romeo'])
 
         results = auto_complete.get_tokens_flat_list(word, max_cost=0, size=3)
+        print_results(locals())
+        assert expected_results == results
+
+    @pytest.mark.parametrize("word, expected_results", [
+        ('bmw', {'make': 'bmw'}),
+        ('bMw', {'make': 'bmw'}),
+        ('al', None),
+    ])
+    def test_get_word_context(self, word, expected_results):
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS, full_stop_words=['bmw', 'alfa romeo'])
+        results = auto_complete.get_word_context(word)
         print_results(locals())
         assert expected_results == results
