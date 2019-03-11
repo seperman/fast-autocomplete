@@ -422,12 +422,14 @@ class _DawgNode:
     set of words.
     """
 
-    __slots__ = ("word", "original_key", "children")
+    __slots__ = ("word", "original_key", "children", "count")
+    insert_count = True
 
     def __init__(self):
         self.word = None
         self.original_key = None
         self.children = {}
+        self.count = 0
 
     def __getitem__(self, key):
         return self.children[key]
