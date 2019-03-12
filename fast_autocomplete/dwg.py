@@ -119,7 +119,6 @@ class AutoComplete:
                         original_key = value.get(ORIGINAL_KEY)
                         word = word.strip().lower()
                         count = value.get('count', 0)
-                        print(f'creating {word} with {count}')
                         leaf_node = self.insert_word_branch(
                             word,
                             original_key=original_key,
@@ -472,8 +471,7 @@ class _DawgNode:
 
     @property
     def value(self):
-        display = self.original_key or self.word
-        return f'{display}'
+        return self.original_key or self.word
 
     def __repr__(self):
         return f'<DawgNode children={list(self.children.keys())}, {self.word}>'
