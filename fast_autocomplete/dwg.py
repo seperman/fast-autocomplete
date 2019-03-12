@@ -3,7 +3,6 @@ from collections import (
     deque
 )
 from enum import Enum
-from operator import itemgetter
 from threading import Lock
 from fast_autocomplete.lfucache import LFUCache
 from fast_autocomplete.misc import _extend_and_repeat
