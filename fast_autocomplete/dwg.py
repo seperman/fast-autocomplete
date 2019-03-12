@@ -1,7 +1,10 @@
-import collections
+from collections import (
+    defaultdict,
+    deque
+)
 from enum import Enum
+from operator import itemgetter
 from threading import Lock
-from collections import defaultdict
 from fast_autocomplete.lfucache import LFUCache
 from fast_autocomplete.misc import _extend_and_repeat
 from fast_autocomplete.normalize import normalize_node_name
@@ -115,12 +118,21 @@ class AutoComplete:
                     for word, value in self.words.items():
                         original_key = value.get(ORIGINAL_KEY)
                         word = word.strip().lower()
-                        leaf_node = self.insert_word_branch(word, original_key=original_key)
+                        count = value.get('count', 0)
+                        print(f'creating {word} with {count}')
+                        leaf_node = self.insert_word_branch(
+                            word,
+                            original_key=original_key,
+                            count=count
+                        )
                         if self._clean_synonyms:
-                            synonyms = self._clean_synonyms.get(word)
-                            if synonyms:
-                                for synonym in synonyms:
-                                    self.insert_word_branch(synonym, leaf_node=leaf_node, add_word=False)
+                            for synonym in self._clean_synonyms.get(word, []):
+                                self.insert_word_branch(
+                                    synonym,
+                                    leaf_node=leaf_node,
+                                    add_word=False,
+                                    count=count
+                                )
 
     def insert_word_callback(self, word):
         """
@@ -128,7 +140,7 @@ class AutoComplete:
         """
         pass
 
-    def insert_word_branch(self, word, leaf_node=None, add_word=True, original_key=None):
+    def insert_word_branch(self, word, leaf_node=None, add_word=True, original_key=None, count=0):
         """
         Inserts a word into the Dawg.
 
@@ -143,10 +155,19 @@ class AutoComplete:
 
         """
         if leaf_node:
-            temp_leaf_node = self._dwg.insert(word[:-1], add_word=add_word, original_key=original_key)
+            temp_leaf_node = self._dwg.insert(
+                word[:-1],
+                add_word=add_word,
+                original_key=original_key,
+                count=count
+            )
             temp_leaf_node.children[word[-1]] = leaf_node
         else:
-            leaf_node = self._dwg.insert(word, original_key=original_key)
+            leaf_node = self._dwg.insert(
+                word,
+                original_key=original_key,
+                count=count
+            )
         self.insert_word_callback(word)
         return leaf_node
 
@@ -241,7 +262,7 @@ class AutoComplete:
             self._add_descendants_words_to_results(node=new_node, size=size, matched_words=matched_words, results=results, distance=1)
         else:
             find_steps = [FindStep.fuzzy_try]
-            word_chunks = collections.deque(filter(lambda x: x, last_word.split(' ')))
+            word_chunks = deque(filter(lambda x: x, last_word.split(' ')))
             new_word = word_chunks.popleft()
 
             # TODO: experiment with the number here
@@ -341,7 +362,7 @@ class AutoComplete:
 
     def _prefix_autofill_part(self, word, node=None, matched_condition_ever=False, matched_condition_in_branch=False):
         node = node or self._dwg
-        que = collections.deque(word)
+        que = deque(word)
 
         matched_prefix_of_last_word = ''
         matched_words = []
@@ -434,7 +455,7 @@ class _DawgNode:
     def __getitem__(self, key):
         return self.children[key]
 
-    def insert(self, word, add_word=True, original_key=None):
+    def insert(self, word, add_word=True, original_key=None, count=0):
         node = self
         for letter in word:
             if letter not in node.children:
@@ -445,18 +466,28 @@ class _DawgNode:
         if add_word:
             node.word = word
             node.original_key = original_key
+            if self.insert_count:
+                node.count = count
         return node
 
     @property
     def value(self):
-        return self.original_key or self.word
+        display = self.original_key or self.word
+        return f'{display}'
 
     def __repr__(self):
-        return f'< children: {list(self.children.keys())}, word: {self.word} >'
+        return f'<DawgNode children={list(self.children.keys())}, {self.word}>'
+
+    @staticmethod
+    def node_count_getter(cls, node):
+        """Retrieves count from get_descendants_nodes tuples."""
+        try:
+            return node[-1].count
+        except (AttributeError, IndexError, TypeError):
+            return 0
 
     def get_descendants_nodes(self, size, go_deep=True, full_stop_words=None):
-
-        que = collections.deque()
+        que = deque()
         unique_nodes = {self}
         found_words_set = set()
         full_stop_words = full_stop_words if full_stop_words else set()
@@ -485,5 +516,9 @@ class _DawgNode:
                         que.append((letter, grand_child_node))
 
     def get_descendants_words(self, size, go_deep=True, full_stop_words=None):
+        if self.insert_count is True:
+            size = INF
         found_words_gen = self.get_descendants_nodes(size, go_deep=go_deep, full_stop_words=full_stop_words)
-        return map(lambda x: x.value, found_words_gen)
+        sorted_by_count = list(found_words_gen)
+        sorted_by_count.sort(key=lambda word: word.count, reverse=True)
+        return map(lambda word: word.value, sorted_by_count)
