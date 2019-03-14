@@ -407,8 +407,8 @@ class AutoComplete:
 
         return matched_prefix_of_last_word, rest_of_word, node, matched_words, matched_condition_ever, matched_condition_in_branch
 
-    def _add_descendants_words_to_results(self, node, size, matched_words, results, distance, go_deep=True):
-        descendant_words = list(node.get_descendants_words(size, go_deep, full_stop_words=self._full_stop_words))
+    def _add_descendants_words_to_results(self, node, size, matched_words, results, distance, should_traverse=True):
+        descendant_words = list(node.get_descendants_words(size, should_traverse, full_stop_words=self._full_stop_words))
         extended = _extend_and_repeat(matched_words, descendant_words)
         if extended:
             results[distance].extend(extended)
@@ -453,6 +453,21 @@ class _DawgNode:
     def __getitem__(self, key):
         return self.children[key]
 
+    def __repr__(self):
+        return f'<DawgNode children={list(self.children.keys())}, {self.word}>'
+
+    @property
+    def value(self):
+        return self.original_key or self.word
+
+    @staticmethod
+    def node_count_getter(cls, node):
+        """Retrieves count from get_descendants_nodes tuples."""
+        try:
+            return node[-1].count
+        except (AttributeError, IndexError, TypeError):
+            return 0
+
     def insert(self, word, add_word=True, original_key=None, count=0):
         node = self
         for letter in word:
@@ -468,25 +483,13 @@ class _DawgNode:
                 node.count = count
         return node
 
-    @property
-    def value(self):
-        return self.original_key or self.word
+    def get_descendants_nodes(self, size, should_traverse=True, full_stop_words=None):
+        if self.insert_count is True:
+            size = INF
 
-    def __repr__(self):
-        return f'<DawgNode children={list(self.children.keys())}, {self.word}>'
-
-    @staticmethod
-    def node_count_getter(cls, node):
-        """Retrieves count from get_descendants_nodes tuples."""
-        try:
-            return node[-1].count
-        except (AttributeError, IndexError, TypeError):
-            return 0
-
-    def get_descendants_nodes(self, size, go_deep=True, full_stop_words=None):
         que = deque()
         unique_nodes = {self}
-        found_words_set = set()
+        found_nodes_set = set()
         full_stop_words = full_stop_words if full_stop_words else set()
 
         for letter, child_node in self.children.items():
@@ -499,23 +502,38 @@ class _DawgNode:
             child_value = child_node.value
             if child_value:
                 if child_value in full_stop_words:
-                    go_deep = False
-                if child_value not in found_words_set:
-                    found_words_set.add(child_value)
+                    should_traverse = False
+                if child_value not in found_nodes_set:
+                    found_nodes_set.add(child_value)
                     yield child_node
-                    if len(found_words_set) > size:
+                    if len(found_nodes_set) > size:
                         break
 
-            if go_deep:
+            if should_traverse:
                 for letter, grand_child_node in child_node.children.items():
                     if grand_child_node not in unique_nodes:
                         unique_nodes.add(grand_child_node)
                         que.append((letter, grand_child_node))
 
-    def get_descendants_words(self, size, go_deep=True, full_stop_words=None):
+    def get_descendants_words(self, size, should_traverse=True, full_stop_words=None):
+        def get_count(node):
+            if isinstance(node, str) or hasattr(node.count, '__call__'):
+                return 0
+            return node.count
+
+        found_nodes_gen = self.get_descendants_nodes(
+            size,
+            should_traverse=should_traverse,
+            full_stop_words=full_stop_words
+        )
+
         if self.insert_count is True:
-            size = INF
-        found_words_gen = self.get_descendants_nodes(size, go_deep=go_deep, full_stop_words=full_stop_words)
-        sorted_by_count = list(found_words_gen)
-        sorted_by_count.sort(key=lambda word: word.count, reverse=True)
-        return map(lambda word: word.value, sorted_by_count)
+            found_nodes = sorted(
+                found_nodes_gen,
+                key=get_count,
+                reverse=True
+            )
+        else:
+            found_nodes = list(found_nodes_gen)
+
+        return map(lambda word: word.value, found_nodes[:size + 1])

@@ -1,10 +1,10 @@
-import os
 import csv
 import json
+import os
 import pytest
+from pprint import pprint
 from typing import NamedTuple
 
-from pprint import pprint
 from fast_autocomplete.misc import read_csv_gen
 from fast_autocomplete import AutoComplete, DrawGraphMixin
 from fast_autocomplete.dwg import FindStep
@@ -397,8 +397,9 @@ class TestPrefixAndDescendants:
     def test_get_descendants_nodes(self, word, expected_results):
         auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
         matched_prefix_of_last_word, rest_of_word, node, matched_words = auto_complete._prefix_autofill(word)
-        found_words_gen = node.get_descendants_nodes(size=2)
-        found_words = [_node.word for _node in found_words_gen]
+        size = 2
+        found_words_gen = node.get_descendants_nodes(size=size)
+        found_words = [_node.word for _node in found_words_gen][:size + 1]
         print(f'word: {word}')
         print(f'expected_results: {expected_results}')
         print(f'found_words: {found_words}')
@@ -414,9 +415,10 @@ class TestPrefixAndDescendants:
         def condition(word_info):
             return 'model' in word_info
 
-        results = auto_complete.get_all_descendent_words_for_condition(word=word, size=10, condition=condition)
+        size = 10
+        results = auto_complete.get_all_descendent_words_for_condition(word=word, size=size, condition=condition)
         print_results(locals())
-        assert expected_results == results
+        assert expected_results == results[:size + 1]
 
 
 class TestOther:
