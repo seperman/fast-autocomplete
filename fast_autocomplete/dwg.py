@@ -159,14 +159,16 @@ class AutoComplete:
                 word[:-1],
                 add_word=add_word,
                 original_key=original_key,
-                count=count
+                count=count,
+                insert_count=self.INSERT_COUNT
             )
             temp_leaf_node.children[word[-1]] = leaf_node
         else:
             leaf_node = self._dwg.insert(
                 word,
                 original_key=original_key,
-                count=count
+                count=count,
+                insert_count=self.INSERT_COUNT
             )
         self.insert_word_callback(word)
         return leaf_node
