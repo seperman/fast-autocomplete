@@ -518,15 +518,11 @@ class _DawgNode:
         )
 
         if insert_count is True:
-            try:
-                found_nodes = sorted(
-                    found_nodes_gen,
-                    key=lambda node: int(node.count),  # converts any str to int
-                    reverse=True
-                )[:size + 1]
-            except TypeError:
-                raise
-
+            found_nodes = sorted(
+                found_nodes_gen,
+                key=lambda node: int(node.count),  # converts any str to int
+                reverse=True
+            )[:size + 1]
         else:
             found_nodes = islice(found_nodes_gen, size)
 
