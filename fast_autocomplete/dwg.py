@@ -27,7 +27,7 @@ class FindStep(Enum):
 class AutoComplete:
 
     CACHE_SIZE = 2048
-    INSERT_COUNT = True
+    SHOULD_INCLUDE_COUNT = True
 
     def __init__(self, words, synonyms=None, full_stop_words=None, logger=None):
         """
@@ -160,7 +160,7 @@ class AutoComplete:
                 add_word=add_word,
                 original_key=original_key,
                 count=count,
-                insert_count=self.INSERT_COUNT
+                insert_count=self.SHOULD_INCLUDE_COUNT
             )
             temp_leaf_node.children[word[-1]] = leaf_node
         else:
@@ -168,7 +168,7 @@ class AutoComplete:
                 word,
                 original_key=original_key,
                 count=count,
-                insert_count=self.INSERT_COUNT
+                insert_count=self.SHOULD_INCLUDE_COUNT
             )
         self.insert_word_callback(word)
         return leaf_node
@@ -431,7 +431,7 @@ class AutoComplete:
 
         matched_prefix_of_last_word, rest_of_word, node, matched_words_part, matched_condition_ever, matched_condition_in_branch = self._prefix_autofill_part(word=word)
         if not rest_of_word and self._node_word_info_matches_condition(node, condition):
-            found_nodes_gen = node.get_descendants_nodes(size)
+            found_nodes_gen = node.get_descendants_nodes(size, insert_count=self.SHOULD_INCLUDE_COUNT)
             for node in found_nodes_gen:
                 if self._node_word_info_matches_condition(node, condition):
                     new_tokens.append(node.word)
