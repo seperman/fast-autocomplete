@@ -1,10 +1,10 @@
-import os
 import csv
 import json
+import os
 import pytest
+from pprint import pprint
 from typing import NamedTuple
 
-from pprint import pprint
 from fast_autocomplete.misc import read_csv_gen
 from fast_autocomplete import AutoComplete, DrawGraphMixin
 from fast_autocomplete.dwg import FindStep
@@ -20,6 +20,7 @@ class Info(NamedTuple):
     make: 'Info' = None
     model: 'Info' = None
     original_key: 'Info' = None
+    count: int = 0
 
     def get(self, key, default=None):
         return getattr(self, key, default)
@@ -75,7 +76,7 @@ with open(os.path.join(current_dir, 'fixtures/synonyms.json'), 'r') as the_file:
 class TestAutocomplete:
 
     @pytest.mark.parametrize("word, max_cost, size, expected_results", [
-        ('bmw', 2, 3, {0: [['bmw']], 1: [['bmw e9'], ['bmw e3'], ['bmw m1'], ['bmw z1']]}),
+        ('bmw', 2, 3, {0: [['bmw']], 1: [['bmw 1 series'], ['bmw e28'], ['bmw e30'], ['bmw e34']]}),
         ('beemer', 2, 3, {}),
         ('honda covic', 2, 3, {0: [['honda']], 1: [['honda', 'civic'], ['honda', 'civic type r']]}),
     ])
@@ -94,30 +95,30 @@ SEARCH_CASES = [
     {'word': ' ',
      'max_cost': 3,
      'size': 3,
-     'expected_find_results': {1: [['a'], ['c'], ['e'], ['m']]},
+     'expected_find_results': {1: [['1 series'], ['bmw 1 series'], ['spirior'], ['honda spirior']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['a'], ['c'], ['e']],
+     'expected_find_and_sort_results': [['1 series'], ['bmw 1 series'], ['spirior']],
      },
     {'word': '',
      'max_cost': 3,
      'size': 3,
-     'expected_find_results': {1: [['a'], ['c'], ['e'], ['m']]},
+     'expected_find_results': {1: [['1 series'], ['bmw 1 series'], ['spirior'], ['honda spirior']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['a'], ['c'], ['e']],
+     'expected_find_and_sort_results': [['1 series'], ['bmw 1 series'], ['spirior']],
      },
     {'word': 'c',
      'max_cost': 3,
      'size': 3,
-     'expected_find_results': {0: [['c']], 1: [['ct'], ['cl'], ['clk'], ['clc']]},
+     'expected_find_results': {0: [['c']], 1: [['charger'], ['chrysler charger'], ['chrysler d'], ['crown']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['c'], ['ct'], ['cl']],
+     'expected_find_and_sort_results': [['c'], ['charger'], ['chrysler charger']],
      },
     {'word': 'ca',
      'max_cost': 3,
      'size': 3,
-     'expected_find_results': {1: [['camry'], ['caddy'], ['cabriolet'], ['california']]},
+     'expected_find_results': {1: [['california'], ['caddy'], ['camry'], ['cabriolet']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['camry'], ['caddy'], ['cabriolet']],
+     'expected_find_and_sort_results': [['california'], ['caddy'], ['camry']],
      },
     {'word': 'camr',
      'max_cost': 3,
@@ -129,71 +130,71 @@ SEARCH_CASES = [
     {'word': '4d',
      'max_cost': 3,
      'size': 3,
-     'expected_find_results': {1: [['4c'], ['4runner']]},
+     'expected_find_results': {1: [['4runner'], ['4c']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['4c'], ['4runner']],
+     'expected_find_and_sort_results': [['4runner'], ['4c']],
      },
     {'word': '2018 alpha ',
      'max_cost': 3,
      'size': 3,
      'expected_find_results': {0: [['2018']],
                                2: [['2018', 'alfa romeo'],
-                                   ['2018', 'alfa romeo 4c'],
-                                   ['2018', 'alfa romeo 6c'],
-                                   ['2018', 'alfa romeo 8c'],
-                                   ['2018', 'alfa romeo 33']]},
+                                   ['2018', 'alfa romeo 2300'],
+                                   ['2018', 'alfa romeo montreal'],
+                                   ['2018', 'alfa romeo 90'],
+                                   ['2018', 'alfa romeo gtv']]},
      'expected_steps': STEP_FUZZY_FOUND,
-     'expected_find_and_sort_results': [['2018'], ['2018', 'alfa romeo'], ['2018', 'alfa romeo 4c']],
+     'expected_find_and_sort_results': [['2018'], ['2018', 'alfa romeo'], ['2018', 'alfa romeo 2300']],
      },
     {'word': '2018 alpha romeo 4d',
      'max_cost': 3,
      'size': 4,
      'expected_find_results': {0: [['2018']],
-                               1: [['2018', 'alfa romeo'],
-                                   ['2018', 'alfa romeo rl'],
-                                   ['2018', 'alfa romeo rm'],
-                                   ['2018', 'alfa romeo 4c'],
+                               1: [['2018', 'alfa romeo 2300'],
+                                   ['2018', 'alfa romeo montreal'],
+                                   ['2018', 'alfa romeo 90'],
+                                   ['2018', 'alfa romeo gtv'],
                                    ['2018', 'alfa romeo 6c']],
                                2: [['2018', 'alfa romeo', 'ameo']]},
      'expected_steps': [FindStep.fuzzy_try, FindStep.fuzzy_found, {FindStep.rest_of_fuzzy_round2: [FindStep.fuzzy_try, FindStep.fuzzy_found]}, FindStep.not_enough_results_add_some_descandants],
      'expected_find_and_sort_results': [['2018'],
-                                        ['2018', 'alfa romeo'],
-                                        ['2018', 'alfa romeo rl'],
-                                        ['2018', 'alfa romeo rm']],
+                                        ['2018', 'alfa romeo 2300'],
+                                        ['2018', 'alfa romeo montreal'],
+                                        ['2018', 'alfa romeo 90']],
      },
     {'word': '2018 alpha',
      'max_cost': 3,
      'size': 3,
      'expected_find_results': {0: [['2018']],
                                2: [['2018', 'alfa romeo'],
-                                   ['2018', 'alfa romeo 4c'],
-                                   ['2018', 'alfa romeo 6c'],
-                                   ['2018', 'alfa romeo 8c'],
-                                   ['2018', 'alfa romeo 33']]},
+                                   ['2018', 'alfa romeo 2300'],
+                                   ['2018', 'alfa romeo montreal'],
+                                   ['2018', 'alfa romeo 90'],
+                                   ['2018', 'alfa romeo gtv']]},
      'expected_steps': STEP_FUZZY_FOUND,
-     'expected_find_and_sort_results': [['2018'], ['2018', 'alfa romeo'], ['2018', 'alfa romeo 4c']],
+     'expected_find_and_sort_results': [['2018'], ['2018', 'alfa romeo'], ['2018', 'alfa romeo 2300']],
      },
     {'word': '2018 alfa',
      'max_cost': 3,
      'size': 3,
      'expected_find_results': {0: [['2018', 'alfa romeo']],
-                               1: [['2018', 'alfa romeo rl'],
-                                   ['2018', 'alfa romeo rm'],
-                                   ['2018', 'alfa romeo 4c'],
-                                   ['2018', 'alfa romeo 6c']]},
+                               1: [['2018', 'alfa romeo 2300'],
+                                   ['2018', 'alfa romeo montreal'],
+                                   ['2018', 'alfa romeo 90'],
+                                   ['2018', 'alfa romeo gtv']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['2018', 'alfa romeo'], ['2018', 'alfa romeo rl'], ['2018', 'alfa romeo rm']],
+     'expected_find_and_sort_results': [['2018', 'alfa romeo'], ['2018', 'alfa romeo 2300'], ['2018', 'alfa romeo montreal']],
      },
     {'word': '2018 alfg',
      'max_cost': 3,
      'size': 3,
      'expected_find_results': {0: [['2018']],
-                               1: [['2018', 'alfa romeo'],
-                                   ['2018', 'alfa romeo rl'],
-                                   ['2018', 'alfa romeo rm'],
-                                   ['2018', 'alfa romeo 4c']]},
+                               1: [['2018', 'alfa romeo 2300'],
+                                   ['2018', 'alfa romeo montreal'],
+                                   ['2018', 'alfa romeo 90'],
+                                   ['2018', 'alfa romeo gtv']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['2018'], ['2018', 'alfa romeo'], ['2018', 'alfa romeo rl']],
+     'expected_find_and_sort_results': [['2018'], ['2018', 'alfa romeo 2300'], ['2018', 'alfa romeo montreal']],
      },
     {'word': '2018 glfa',
      'max_cost': 3,
@@ -207,12 +208,12 @@ SEARCH_CASES = [
      'size': 3,
      'expected_find_results': {0: [['2018']],
                                1: [['2018', 'toyota'],
-                                   ['2018', 'toyota 86'],
-                                   ['2018', 'toyota aygo'],
-                                   ['2018', 'toyota vios'],
-                                   ['2018', 'toyota noah']]},
+                                   ['2018', 'toyota crown'],
+                                   ['2018', 'toyota prius'],
+                                   ['2018', 'toyota avalon'],
+                                   ['2018', 'toyota dyna']]},
      'expected_steps': STEP_FUZZY_FOUND,
-     'expected_find_and_sort_results': [['2018'], ['2018', 'toyota'], ['2018', 'toyota 86']],
+     'expected_find_and_sort_results': [['2018'], ['2018', 'toyota'], ['2018', 'toyota crown']],
      },
     {'word': '2018 doyota camr',
      'max_cost': 3,
@@ -220,8 +221,8 @@ SEARCH_CASES = [
      'expected_find_results': {0: [['2018']],
                                1: [['2018', 'toyota', 'camry'],
                                    ['2018', 'dyna'],
-                                   ['2018', 'drifter'],
-                                   ['2018', 'dauphine']]},
+                                   ['2018', 'dauphine'],
+                                   ['2018', 'drifter']]},
      'expected_steps': [FindStep.fuzzy_try, FindStep.fuzzy_found, {FindStep.rest_of_fuzzy_round2: [FindStep.descendants_only]}, FindStep.not_enough_results_add_some_descandants],
      'expected_find_and_sort_results': [['2018'], ['2018', 'toyota', 'camry'], ['2018', 'dyna']],
      },
@@ -229,23 +230,23 @@ SEARCH_CASES = [
      'max_cost': 3,
      'size': 3,
      'expected_find_results': {0: [['2018', 'bmw']],
-                               1: [['2018', 'bmw e9'],
-                                   ['2018', 'bmw e3'],
-                                   ['2018', 'bmw m1'],
-                                   ['2018', 'bmw z1']]},
+                               1: [['2018', 'bmw 1 series'],
+                                   ['2018', 'bmw e28'],
+                                   ['2018', 'bmw e30'],
+                                   ['2018', 'bmw e34']]},
      'expected_steps': STEP_DESCENDANTS_ONLY,
-     'expected_find_and_sort_results': [['2018', 'bmw'], ['2018', 'bmw e9'], ['2018', 'bmw e3']],
+     'expected_find_and_sort_results': [['2018', 'bmw'], ['2018', 'bmw 1 series'], ['2018', 'bmw e28']],
      },
     {'word': '2018 beener',
      'max_cost': 3,
      'size': 3,
      'expected_find_results': {0: [['2018']],
-                               1: [['2018', 'bmw'],
-                                   ['2018', 'beetle'],
-                                   ['2018', 'bmw e9'],
-                                   ['2018', 'bmw e3']]},
+                               1: [['2018', 'bmw 1 series'],
+                                   ['2018', 'bmw e28'],
+                                   ['2018', 'bmw e30'],
+                                   ['2018', 'bmw e34']]},
      'expected_steps': [FindStep.fuzzy_try, FindStep.not_enough_results_add_some_descandants],
-     'expected_find_and_sort_results': [['2018'], ['2018', 'bmw'], ['2018', 'beetle']],
+     'expected_find_and_sort_results': [['2018'], ['2018', 'bmw 1 series'], ['2018', 'bmw e28']],
      },
     {'word': 'vw bea',
      'max_cost': 3,
@@ -397,8 +398,9 @@ class TestPrefixAndDescendants:
     def test_get_descendants_nodes(self, word, expected_results):
         auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS)
         matched_prefix_of_last_word, rest_of_word, node, matched_words = auto_complete._prefix_autofill(word)
-        found_words_gen = node.get_descendants_nodes(size=2)
-        found_words = [_node.word for _node in found_words_gen]
+        size = 2
+        found_words_gen = node.get_descendants_nodes(size=size)
+        found_words = [_node.word for _node in found_words_gen][:size + 1]
         print(f'word: {word}')
         print(f'expected_results: {expected_results}')
         print(f'found_words: {found_words}')
@@ -414,9 +416,10 @@ class TestPrefixAndDescendants:
         def condition(word_info):
             return 'model' in word_info
 
-        results = auto_complete.get_all_descendent_words_for_condition(word=word, size=10, condition=condition)
+        size = 10
+        results = auto_complete.get_all_descendent_words_for_condition(word=word, size=size, condition=condition)
         print_results(locals())
-        assert expected_results == results
+        assert expected_results == results[:size + 1]
 
 
 class TestOther:
