@@ -2,6 +2,7 @@ from collections import (
     defaultdict,
     deque
 )
+from itertools import islice
 from enum import Enum
 from threading import Lock
 from fast_autocomplete.lfucache import LFUCache
@@ -26,6 +27,7 @@ class FindStep(Enum):
 class AutoComplete:
 
     CACHE_SIZE = 2048
+    INSERT_COUNT = True
 
     def __init__(self, words, synonyms=None, full_stop_words=None, logger=None):
         """
@@ -442,7 +444,6 @@ class _DawgNode:
     """
 
     __slots__ = ("word", "original_key", "children", "count")
-    insert_count = True
 
     def __init__(self):
         self.word = None
@@ -460,15 +461,7 @@ class _DawgNode:
     def value(self):
         return self.original_key or self.word
 
-    @staticmethod
-    def node_count_getter(cls, node):
-        """Retrieves count from get_descendants_nodes tuples."""
-        try:
-            return node[-1].count
-        except (AttributeError, IndexError, TypeError):
-            return 0
-
-    def insert(self, word, add_word=True, original_key=None, count=0):
+    def insert(self, word, add_word=True, original_key=None, count=0, insert_count=True):
         node = self
         for letter in word:
             if letter not in node.children:
@@ -479,12 +472,12 @@ class _DawgNode:
         if add_word:
             node.word = word
             node.original_key = original_key
-            if self.insert_count:
+            if insert_count:
                 node.count = count
         return node
 
-    def get_descendants_nodes(self, size, should_traverse=True, full_stop_words=None):
-        if self.insert_count is True:
+    def get_descendants_nodes(self, size, should_traverse=True, full_stop_words=None, insert_count=True):
+        if insert_count is True:
             size = INF
 
         que = deque()
@@ -515,25 +508,26 @@ class _DawgNode:
                         unique_nodes.add(grand_child_node)
                         que.append((letter, grand_child_node))
 
-    def get_descendants_words(self, size, should_traverse=True, full_stop_words=None):
-        def get_count(node):
-            if isinstance(node, str) or hasattr(node.count, '__call__'):
-                return 0
-            return node.count
-
+    def get_descendants_words(
+        self, size, should_traverse=True, full_stop_words=None, insert_count=True):
         found_nodes_gen = self.get_descendants_nodes(
             size,
             should_traverse=should_traverse,
-            full_stop_words=full_stop_words
+            full_stop_words=full_stop_words,
+            insert_count=insert_count
         )
 
-        if self.insert_count is True:
-            found_nodes = sorted(
-                found_nodes_gen,
-                key=get_count,
-                reverse=True
-            )
-        else:
-            found_nodes = list(found_nodes_gen)
+        if insert_count is True:
+            try:
+                found_nodes = sorted(
+                    found_nodes_gen,
+                    key=lambda node: int(node.count),  # converts any str to int
+                    reverse=True
+                )[:size + 1]
+            except TypeError:
+                raise
 
-        return map(lambda word: word.value, found_nodes[:size + 1])
+        else:
+            found_nodes = islice(found_nodes_gen, size)
+
+        return map(lambda word: word.value, found_nodes)

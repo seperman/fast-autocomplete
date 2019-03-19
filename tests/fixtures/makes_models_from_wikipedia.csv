@@ -1,344 +1,344 @@
-make,model
-Toyota,Aurion
-Toyota,Avalon
-Toyota,Avensis
-Toyota,Camry
-Toyota,Crown
-Toyota,Etios
-Toyota,Mirai
-Toyota,Prius
-Toyota,Vios
-Toyota,Auris
-Toyota,Aygo
-Toyota,Yaris
-Toyota,86
-Toyota,Avanza
-Toyota,Innova
-Toyota,Noah
-Toyota,Sienna
-Toyota,Sienta
-Toyota,Previa
-Toyota,Verso
-Toyota,Wish
-Toyota,4Runner
-Toyota,Fortuner
-Toyota,Highlander
-Toyota,RAV4
-Toyota,Sequoia
-Toyota,HiAce
-Toyota,Tacoma
-Toyota,Tundra
-Toyota,Coaster
-Toyota,Dyna
-Lexus,CT
-Lexus,IS
-Lexus,HS
-Lexus,ES
-Lexus,GS
-Lexus,LS
-Lexus,SC
-Lexus,RC
-Lexus,LC
-Lexus,LFA
-Lexus,NX
-Lexus,RX
-Lexus,GX
-Lexus,LX
-BMW,1 series
-BMW,2 series
-BMW,303
-BMW,328
-BMW,326
-BMW,327
-BMW,320
-BMW,321
-BMW,340
-BMW,501
-BMW,503
-BMW,507
-BMW,700
-BMW,E9
-BMW,E3
-BMW,M1
-BMW,E28
-BMW,E30
-BMW,E32
-BMW,E34
-BMW,Z1
-BMW,E31
-BMW,Z3
-BMW,Z8
-BMW,i3
-BMW,i8
-Audi,F103
-Audi,100
-Audi,80
-Audi,50
-Audi,200
-Audi,5
-Audi,90
-Audi,V8
-Audi,Cabriolet
-Audi,A8
-Audi,A4
-Audi,A3
-Audi,A6
-Audi,TT
-Audi,A2
-Audi,Q7
-Audi,A5
-Audi,Q5
-Audi,R8
-Audi,A1
-Audi,A7
-Audi,Q2
-Audi,Q3
-Audi,Q8
-Audi,e
-Mercedes-Benz,SSK
-Mercedes-Benz,W10
-Mercedes-Benz,130H
-Mercedes-Benz,150H
-Mercedes-Benz,W31
-Mercedes-Benz,W136
-Mercedes-Benz,770
-Mercedes-Benz,500K
-Mercedes-Benz,540K
-Mercedes-Benz,260
-Mercedes-Benz,W125
-Mercedes-Benz,W154
-Mercedes-Benz,T80
-Mercedes-Benz,W191
-Mercedes-Benz,W120
-Mercedes-Benz,190SL
-Mercedes-Benz,W187
-Mercedes-Benz,W105
-Mercedes-Benz,W180
-Mercedes-Benz,W186
-Mercedes-Benz,W188
-Mercedes-Benz,W189
-Mercedes-Benz,W196
-Mercedes-Benz,300
-Mercedes-Benz,300SL
-Mercedes-Benz,W110
-Mercedes-Benz,W111
-Mercedes-Benz,W112
-Mercedes-Benz,W108
-Mercedes-Benz,W114
-Mercedes-Benz,W100
-Mercedes-Benz,W113
-Mercedes-Benz,W123
-Mercedes-Benz,G
-Mercedes-Benz,S
-Mercedes-Benz,W116
-Mercedes-Benz,SL
-Mercedes-Benz,R107
-Mercedes-Benz,W201
-Mercedes-Benz,C123
-Mercedes-Benz,W126
-Mercedes-Benz,S123
-Mercedes-Benz,C126
-Mercedes-Benz,W124
-Mercedes-Benz,C124
-Mercedes-Benz,A
-Mercedes-Benz,C
-Mercedes-Benz,CLK
-Mercedes-Benz,E
-Mercedes-Benz,M
-Mercedes-Benz,R129
-Mercedes-Benz,Vaneo
-Mercedes-Benz,W168
-Mercedes-Benz,W169
-Mercedes-Benz,B
-Mercedes-Benz,W203
-Mercedes-Benz,W204
-Mercedes-Benz,W205
-Mercedes-Benz,CL
-Mercedes-Benz,W215
-Mercedes-Benz,W216
-Mercedes-Benz,CLC
-Mercedes-Benz,CLS
-Mercedes-Benz,W210
-Mercedes-Benz,W211
-Mercedes-Benz,W212
-Mercedes-Benz,GL
-Mercedes-Benz,W163
-Mercedes-Benz,W164
-Mercedes-Benz,R
-Mercedes-Benz,W220
-Mercedes-Benz,W221
-Mercedes-Benz,W222
-Mercedes-Benz,SLK
-Mercedes-Benz,R170
-Mercedes-Benz,R171
-Mercedes-Benz,R230
-Mercedes-Benz,SLR
-Mercedes-Benz,CLA
-Mercedes-Benz,GLA
-Mercedes-Benz,R231
-Alfa Romeo,4C
-Alfa Romeo,6C
-Alfa Romeo,8C
-Alfa Romeo,12C
-Alfa Romeo,33
-Alfa Romeo,75
-Alfa Romeo,90
-Alfa Romeo,105
-Alfa Romeo,145
-Alfa Romeo,146
-Alfa Romeo,147
-Alfa Romeo,155
-Alfa Romeo,156
-Alfa Romeo,159
-Alfa Romeo,164
-Alfa Romeo,166
-Alfa Romeo,1750
-Alfa Romeo,1900
-Alfa Romeo,2000
-Alfa Romeo,2300
-Alfa Romeo,2600
-Alfa Romeo,Type
-Alfa Romeo,Alfasud
-Alfa Romeo,Alfetta
-Alfa Romeo,AR6
-Alfa Romeo,AR8
-Alfa Romeo,Arna
-Alfa Romeo,Brera
-Alfa Romeo,Dauphine
-Alfa Romeo,G1
-Alfa Romeo,Giulia
-Alfa Romeo,Giulietta
-Alfa Romeo,Gran
-Alfa Romeo,GT
-Alfa Romeo,GTA
-Alfa Romeo,GTV
-Alfa Romeo,Matta
-Alfa Romeo,MiTo
-Alfa Romeo,Montreal
-Alfa Romeo,RL
-Alfa Romeo,RM
-Alfa Romeo,Spider
-Alfa Romeo,Sprint
-Alfa Romeo,Stelvio
-Alfa Romeo,SZ
-Volkswagen,Amarok
-Volkswagen,Ameo
-Volkswagen,Arteon
-Volkswagen,Atlas
-Volkswagen,Caddy
-Volkswagen,California
-Volkswagen,Fox
-Volkswagen,Gol
-Volkswagen,Golf
-Volkswagen,Jetta
-Volkswagen,Lamando
-Volkswagen,Lavida
-Volkswagen,Beetle
-Volkswagen,Passat
-Volkswagen,Passat
-Volkswagen,Polo
-Volkswagen,Polo
-Volkswagen,Santana
-Volkswagen,Sharan
-Volkswagen,Tiguan
-Volkswagen,Touareg
-Volkswagen,Touran
-Volkswagen,Transporter
-Volkswagen,Up
-Volkswagen,Vento
-Volkswagen,XL
-Chrysler,150
-Chrysler,180
-Chrysler,200
-Chrysler,300
-Chrysler,300M
-Chrysler,300
-Chrysler,Airflow
-Chrysler,Airstream
-Chrysler,Aspen
-Chrysler,Centura
-Chrysler,Australia
-Chrysler,Charger
-Chrysler,by
-Chrysler,Cirrus
-Chrysler,Colt
-Chrysler,Concorde
-Chrysler,Conquest
-Chrysler,Cordoba
-Chrysler,Crossfire
-Chrysler,D
-Chrysler,Drifter
-Chrysler,Executive
-Chrysler,Fifth
-Chrysler,Galant
-Chrysler,Horizon
-Chrysler,Hunter
-Chrysler,Imperial
-Chrysler,Imperial
-Chrysler,L300
-Chrysler,Lancer
-Chrysler,Laser
-Chrysler,LeBaron
-Chrysler,LHS
-Chrysler,Newport
-Chrysler,Neon
-Chrysler,New
-Chrysler,Fifth
-Chrysler,Pacifica
-Chrysler,Prowler
-Chrysler,PT
-Chrysler,Regal
-Chrysler,Royal
-Chrysler,Royal
-Chrysler,Royal
-Chrysler,Saratoga
-Chrysler,Sebring
-Chrysler,Sigma
-Chrysler,Sunbeam
-Chrysler,TC
-Chrysler,Touring
-Chrysler,Town
-Chrysler,Turbine
-Chrysler,Valiant
-Chrysler,Valiant
-Chrysler,Vogue
-Chrysler,Voyager
-Chrysler,Royal
-Chrysler,Windsor
-Honda,Accord
-Honda,Amaze
-Honda,Avancier
-Honda,Ballade
-Honda,Brio
-Honda,City
-Honda,Civic
-Honda,Civic Type R
-Honda,Clarity
-Honda,Crider
-Honda,Elysion
-Honda,Fit
-Honda,Freed
-Honda,Freed
-Honda,City
-Honda,City
-Honda,City
-Honda,Jade
-Honda,Fit
-Honda,Legend
-Honda,Mobilio
-Honda,NSX
-Honda,Pilot
-Honda,Ridgeline
-Honda,S660
-Honda,Shuttle
-Honda,Spirior
-Honda,StepWGN
-Honda,Avancier
-Honda,Vamos
-Honda,Vezel
-Honda,Type R
-Jaguar,F-Type
-Jaguar,Type
-2007,2007
-2017,2017
-2018,2018
+make,model,count
+Toyota,Aurion,6094
+Toyota,Avalon,8803
+Toyota,Avensis,1630
+Toyota,Camry,5371
+Toyota,Crown,9443
+Toyota,Etios,5806
+Toyota,Mirai,4272
+Toyota,Prius,9425
+Toyota,Vios,8322
+Toyota,Auris,4025
+Toyota,Aygo,2115
+Toyota,Yaris,6274
+Toyota,86,1298
+Toyota,Avanza,1760
+Toyota,Innova,4250
+Toyota,Noah,3462
+Toyota,Sienna,3992
+Toyota,Sienta,4992
+Toyota,Previa,8404
+Toyota,Verso,3765
+Toyota,Wish,3735
+Toyota,4Runner,5616
+Toyota,Fortuner,7003
+Toyota,Highlander,6235
+Toyota,RAV4,3182
+Toyota,Sequoia,2900
+Toyota,HiAce,5402
+Toyota,Tacoma,7371
+Toyota,Tundra,6608
+Toyota,Coaster,3503
+Toyota,Dyna,8426
+Lexus,CT,6770
+Lexus,IS,4028
+Lexus,HS,7415
+Lexus,ES,827
+Lexus,GS,3557
+Lexus,LS,1916
+Lexus,SC,6595
+Lexus,RC,7647
+Lexus,LC,8265
+Lexus,LFA,7897
+Lexus,NX,3177
+Lexus,RX,2663
+Lexus,GX,2696
+Lexus,LX,5592
+BMW,1 series,9969
+BMW,2 series,4590
+BMW,303,2047
+BMW,328,4334
+BMW,326,5637
+BMW,327,5377
+BMW,320,4309
+BMW,321,4170
+BMW,340,1178
+BMW,501,3430
+BMW,503,423
+BMW,507,3448
+BMW,700,3304
+BMW,E9,4675
+BMW,E3,3190
+BMW,M1,130
+BMW,E28,9404
+BMW,E30,8655
+BMW,E32,786
+BMW,E34,7726
+BMW,Z1,3143
+BMW,E31,4817
+BMW,Z3,688
+BMW,Z8,2607
+BMW,i3,2
+BMW,i8,4246
+Audi,F103,8261
+Audi,100,3565
+Audi,80,876
+Audi,50,6248
+Audi,200,3625
+Audi,5,6191
+Audi,90,4520
+Audi,V8,1751
+Audi,Cabriolet,2344
+Audi,A8,3985
+Audi,A4,9554
+Audi,A3,2451
+Audi,A6,8058
+Audi,TT,656
+Audi,A2,1032
+Audi,Q7,1988
+Audi,A5,1568
+Audi,Q5,9372
+Audi,R8,7835
+Audi,A1,2102
+Audi,A7,5228
+Audi,Q2,1222
+Audi,Q3,2371
+Audi,Q8,5076
+Audi,e,4462
+Mercedes-Benz,SSK,671
+Mercedes-Benz,W10,1574
+Mercedes-Benz,130H,7603
+Mercedes-Benz,150H,3934
+Mercedes-Benz,W31,6563
+Mercedes-Benz,W136,1007
+Mercedes-Benz,770,7990
+Mercedes-Benz,500K,4089
+Mercedes-Benz,540K,8136
+Mercedes-Benz,260,6160
+Mercedes-Benz,W125,7458
+Mercedes-Benz,W154,5619
+Mercedes-Benz,T80,9497
+Mercedes-Benz,W191,8567
+Mercedes-Benz,W120,8652
+Mercedes-Benz,190SL,2584
+Mercedes-Benz,W187,647
+Mercedes-Benz,W105,8822
+Mercedes-Benz,W180,1470
+Mercedes-Benz,W186,6734
+Mercedes-Benz,W188,3572
+Mercedes-Benz,W189,2539
+Mercedes-Benz,W196,9903
+Mercedes-Benz,300,2989
+Mercedes-Benz,300SL,3393
+Mercedes-Benz,W110,9213
+Mercedes-Benz,W111,2363
+Mercedes-Benz,W112,767
+Mercedes-Benz,W108,1470
+Mercedes-Benz,W114,7292
+Mercedes-Benz,W100,2874
+Mercedes-Benz,W113,8493
+Mercedes-Benz,W123,10
+Mercedes-Benz,G,3926
+Mercedes-Benz,S,1871
+Mercedes-Benz,W116,3454
+Mercedes-Benz,SL,6343
+Mercedes-Benz,R107,5253
+Mercedes-Benz,W201,4450
+Mercedes-Benz,C123,1913
+Mercedes-Benz,W126,4950
+Mercedes-Benz,S123,1403
+Mercedes-Benz,C126,100
+Mercedes-Benz,W124,3632
+Mercedes-Benz,C124,7291
+Mercedes-Benz,A,3129
+Mercedes-Benz,C,7321
+Mercedes-Benz,CLK,3968
+Mercedes-Benz,E,7247
+Mercedes-Benz,M,1164
+Mercedes-Benz,R129,6156
+Mercedes-Benz,Vaneo,8457
+Mercedes-Benz,W168,9009
+Mercedes-Benz,W169,8059
+Mercedes-Benz,B,212
+Mercedes-Benz,W203,897
+Mercedes-Benz,W204,4603
+Mercedes-Benz,W205,1626
+Mercedes-Benz,CL,7195
+Mercedes-Benz,W215,3007
+Mercedes-Benz,W216,8348
+Mercedes-Benz,CLC,1313
+Mercedes-Benz,CLS,6176
+Mercedes-Benz,W210,6893
+Mercedes-Benz,W211,1415
+Mercedes-Benz,W212,7213
+Mercedes-Benz,GL,6275
+Mercedes-Benz,W163,9507
+Mercedes-Benz,W164,1198
+Mercedes-Benz,R,4807
+Mercedes-Benz,W220,5300
+Mercedes-Benz,W221,2417
+Mercedes-Benz,W222,156
+Mercedes-Benz,SLK,1540
+Mercedes-Benz,R170,398
+Mercedes-Benz,R171,8498
+Mercedes-Benz,R230,3168
+Mercedes-Benz,SLR,1324
+Mercedes-Benz,CLA,3896
+Mercedes-Benz,GLA,267
+Mercedes-Benz,R231,2692
+Alfa Romeo,4C,3411
+Alfa Romeo,6C,9492
+Alfa Romeo,8C,1203
+Alfa Romeo,12C,2353
+Alfa Romeo,33,5014
+Alfa Romeo,75,6092
+Alfa Romeo,90,9659
+Alfa Romeo,105,8850
+Alfa Romeo,145,3173
+Alfa Romeo,146,6418
+Alfa Romeo,147,6209
+Alfa Romeo,155,8973
+Alfa Romeo,156,8905
+Alfa Romeo,159,4991
+Alfa Romeo,164,5324
+Alfa Romeo,166,1749
+Alfa Romeo,1750,309
+Alfa Romeo,1900,6706
+Alfa Romeo,2000,5057
+Alfa Romeo,2300,9805
+Alfa Romeo,2600,4120
+Alfa Romeo,Type,2662
+Alfa Romeo,Alfasud,2735
+Alfa Romeo,Alfetta,7667
+Alfa Romeo,AR6,1982
+Alfa Romeo,AR8,1004
+Alfa Romeo,Arna,462
+Alfa Romeo,Brera,5686
+Alfa Romeo,Dauphine,8051
+Alfa Romeo,G1,4370
+Alfa Romeo,Giulia,357
+Alfa Romeo,Giulietta,4924
+Alfa Romeo,Gran,3989
+Alfa Romeo,GT,2729
+Alfa Romeo,GTA,3848
+Alfa Romeo,GTV,9649
+Alfa Romeo,Matta,2519
+Alfa Romeo,MiTo,4991
+Alfa Romeo,Montreal,9744
+Alfa Romeo,RL,7160
+Alfa Romeo,RM,871
+Alfa Romeo,Spider,5029
+Alfa Romeo,Sprint,435
+Alfa Romeo,Stelvio,6508
+Alfa Romeo,SZ,3626
+Volkswagen,Amarok,6016
+Volkswagen,Ameo,350
+Volkswagen,Arteon,4740
+Volkswagen,Atlas,62
+Volkswagen,Caddy,5908
+Volkswagen,California,5950
+Volkswagen,Fox,4201
+Volkswagen,Gol,5813
+Volkswagen,Golf,9087
+Volkswagen,Jetta,3159
+Volkswagen,Lamando,2122
+Volkswagen,Lavida,3107
+Volkswagen,Beetle,533
+Volkswagen,Passat,1604
+Volkswagen,Passat,2373
+Volkswagen,Polo,6275
+Volkswagen,Polo,5747
+Volkswagen,Santana,9798
+Volkswagen,Sharan,7338
+Volkswagen,Tiguan,8213
+Volkswagen,Touareg,20
+Volkswagen,Touran,1586
+Volkswagen,Transporter,3823
+Volkswagen,Up,9100
+Volkswagen,Vento,7540
+Volkswagen,XL,888
+Chrysler,150,7529
+Chrysler,180,4813
+Chrysler,200,8641
+Chrysler,300,1638
+Chrysler,300M,2061
+Chrysler,300,2088
+Chrysler,Airflow,1330
+Chrysler,Airstream,6486
+Chrysler,Aspen,1092
+Chrysler,Centura,7034
+Chrysler,Australia,606
+Chrysler,Charger,9594
+Chrysler,by,5575
+Chrysler,Cirrus,5222
+Chrysler,Colt,6522
+Chrysler,Concorde,6028
+Chrysler,Conquest,9079
+Chrysler,Cordoba,7228
+Chrysler,Crossfire,4830
+Chrysler,D,9559
+Chrysler,Drifter,5391
+Chrysler,Executive,165
+Chrysler,Fifth,4183
+Chrysler,Galant,8517
+Chrysler,Horizon,2723
+Chrysler,Hunter,5119
+Chrysler,Imperial,2807
+Chrysler,Imperial,9531
+Chrysler,L300,786
+Chrysler,Lancer,5398
+Chrysler,Laser,325
+Chrysler,LeBaron,4387
+Chrysler,LHS,1989
+Chrysler,Newport,9134
+Chrysler,Neon,758
+Chrysler,New,5002
+Chrysler,Fifth,6742
+Chrysler,Pacifica,3467
+Chrysler,Prowler,5390
+Chrysler,PT,4102
+Chrysler,Regal,6030
+Chrysler,Royal,4960
+Chrysler,Royal,863
+Chrysler,Royal,20
+Chrysler,Saratoga,8312
+Chrysler,Sebring,1267
+Chrysler,Sigma,683
+Chrysler,Sunbeam,7414
+Chrysler,TC,4384
+Chrysler,Touring,325
+Chrysler,Town,2340
+Chrysler,Turbine,6708
+Chrysler,Valiant,9309
+Chrysler,Valiant,3872
+Chrysler,Vogue,5589
+Chrysler,Voyager,3797
+Chrysler,Royal,4695
+Chrysler,Windsor,5449
+Honda,Accord,5547
+Honda,Amaze,3084
+Honda,Avancier,9269
+Honda,Ballade,1666
+Honda,Brio,1899
+Honda,City,4908
+Honda,Civic,6317
+Honda,Civic Type R,4415
+Honda,Clarity,6472
+Honda,Crider,2453
+Honda,Elysion,5302
+Honda,Fit,2572
+Honda,Freed,5982
+Honda,Freed,7931
+Honda,City,8034
+Honda,City,8319
+Honda,City,7527
+Honda,Jade,8594
+Honda,Fit,4487
+Honda,Legend,5208
+Honda,Mobilio,6348
+Honda,NSX,196
+Honda,Pilot,7059
+Honda,Ridgeline,8671
+Honda,S660,9805
+Honda,Shuttle,1230
+Honda,Spirior,9906
+Honda,StepWGN,4061
+Honda,Avancier,9107
+Honda,Vamos,466
+Honda,Vezel,4760
+Honda,Type R,5449
+Jaguar,F-Type,8457
+Jaguar,Type,191
+2007,2007,3276
+2017,2017,1741
+2018,2018,59
