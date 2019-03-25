@@ -1,15 +1,6 @@
-import re
 from setuptools import setup, find_packages
 
-VERSIONFILE = "fast_autocomplete/__init__.py"
-with open(VERSIONFILE, "r") as the_file:
-    verstrline = the_file.read()
-VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
-mo = re.search(VSRE, verstrline, re.M)
-if mo:
-    verstr = mo.group(1)
-else:
-    raise RuntimeError("Unable to find version string in %s." % (VERSIONFILE,))
+version = '0.4.0'
 
 
 def get_reqs(filename):
@@ -36,7 +27,7 @@ setup(
     url='https://github.com/wearefair/fast-autocomplete',
     download_url='https://github.com/wearefair/fast-autocomplete/tarball/master',
     author_email='sepd@fair.com',
-    version=verstr,
+    version=version,
     install_requires=reqs,
     dependency_links=[],
     packages=find_packages(exclude=('tests', 'docs')),
