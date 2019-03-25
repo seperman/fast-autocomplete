@@ -1,4 +1,4 @@
-# Fast Autocomplete 0.2.9
+# Fast Autocomplete 0.4.0
 
 Fast autocomplete using Directed Word Graph (DWG) and Levenshtein Edit Distance.
 
@@ -291,6 +291,15 @@ demo(autocomplete, max_cost=3, size=5)
 
 We try to maintain high standard in code coverage. Currently the `dwg` module's coverage is around 99%!
 
+## Releases
+
+We use bump2version to bump and tag releases.
+
+```bash
+git checkout master && git pull
+bump2version {patch|minor|major}
+git push && git push --tags
+```
 
 # Authors
 

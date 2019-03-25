@@ -1,9 +1,12 @@
 # flake8: noqa
-__version__ = '0.4.0'
 import sys
+import pkg_resources
+
 pyversion = float(sys.version[:3])
 if pyversion < 3.6:
     sys.exit('fast-autocomplete requires Python 3.6 or later.')
+
+__version__ = pkg_resources.get_distribution("fast-autocomplete").version
 
 from fast_autocomplete.dwg import AutoComplete
 from fast_autocomplete.draw import DrawGraphMixin
