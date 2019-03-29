@@ -6,6 +6,8 @@ The results are cached via LFU (Least Frequently Used).
 
 # Why
 
+Read about why fast-autocomplete was built here: <http://zepworks.com/posts/you-autocomplete-me/>
+
 This library was written when we came to the conclusion that Elasticsearch's Autocomplete suggestor is not fast enough and doesn't do everything that we need:
 
 1. Once we switched to Fast Autocomplete, our average latency went from 120ms to 30ms so an improvement of 3-4x in performance and errors went down to zero.
@@ -14,10 +16,11 @@ This library was written when we came to the conclusion that Elasticsearch's Aut
 You might say:
 
 1. Regarding #1: Yes, but you are using caching. Answer: shhh Yes, keep it quiet. We are also doing Levenshtein Edit distance using a C library so it improves there too.
-2. Regarding #2: I'm speechless. Answer: Ok, now we are talking.
-
+2. Regarding #2: Cool. Answer: Ok, now we are talking.
 
 # How
+
+Read about how fast-autocomplete works here: <http://zepworks.com/posts/you-autocomplete-me/>
 
 In a nutshell, what the fast Autocomplete does is:
 
