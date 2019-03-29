@@ -63,6 +63,25 @@ DWG stands for Directed Word Graph. Here is an example DWG based on the "makes_m
 # Usage
 
 First of all lets start from your data. The library leaves it up to you how to prepare your data.
+
+## Example 1
+
+```py
+>>> from fast_autocomplete import AutoComplete
+>>> words = {'book': {}, 'burrito': {}, 'pizza': {}, 'pasta':{}}
+>>> autocomplete = AutoComplete(words=words)
+>>> autocomplete.search(word='b', max_cost=3, size=3)
+[['book'], ['burrito']]
+>>> autocomplete.search(word='bu', max_cost=3, size=3)
+[['burrito']]
+>>> autocomplete.search(word='barrito', max_cost=3, size=3)  # mis-spelling
+[['burrito']]
+```
+
+Words is a dictionary and each word can have a context. For example the "count", how to display the word, some other context around the word etc. In this example words didn't have any context.
+
+## Example 2
+
 Imagine that we have a csv with the following content from vehicles' make and models:
 
 ```csv
