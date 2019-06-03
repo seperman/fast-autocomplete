@@ -1,5 +1,8 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # noqa
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'tests'))) # noqa
+current_file = os.path.dirname(__file__)
+path1 = os.path.abspath(os.path.join(current_file, '..'))
+path2 = os.path.abspath(os.path.join(current_file, 'tests'))
+sys.path.append(path1) # noqa
+sys.path.append(path2) # noqa

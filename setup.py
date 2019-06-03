@@ -25,7 +25,6 @@ setup(
     long_description_content_type='text/markdown',
     author='Sep Dehpour',
     url='https://github.com/wearefair/fast-autocomplete',
-    download_url='https://github.com/wearefair/fast-autocomplete/tarball/master',
     author_email='sepd@fair.com',
     version=version,
     install_requires=reqs,
