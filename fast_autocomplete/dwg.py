@@ -195,7 +195,7 @@ class AutoComplete:
 
     def get_tokens_flat_list(self, word, max_cost=3, size=10):
         """
-        Gets a flast list of tokens.
+        Gets a flat list of tokens.
         This requires the original search function from this class to be run,
         instead of subclasses of AutoComplete.
         """
