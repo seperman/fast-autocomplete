@@ -112,22 +112,23 @@ class LFUCache:
         self.lock = Lock()
 
     def get(self, key):
-        if key in self.cache:
-            cache_node = self.cache[key]
-            freq_node = cache_node.freq_node
-            value = cache_node.value
+        with self.lock:
+            if key in self.cache:
+                cache_node = self.cache[key]
+                freq_node = cache_node.freq_node
+                value = cache_node.value
 
-            self.move_forward(cache_node, freq_node)
+                self.move_forward(cache_node, freq_node)
 
-            return value
-        else:
-            return -1
+                return value
+            else:
+                return -1
 
     def set(self, key, value):
-        if self.capacity <= 0:
-            return -1
-
         with self.lock:
+            if self.capacity <= 0:
+                return -1
+
             if key not in self.cache:
                 if len(self.cache) >= self.capacity:
                     self.dump_cache()
