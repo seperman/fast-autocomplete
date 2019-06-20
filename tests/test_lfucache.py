@@ -5,14 +5,6 @@ from deepdiff import DeepDiff
 from fast_autocomplete.lfucache import LFUCache
 
 
-def threaded_set(cache, key):
-    cache.set(key, f'{key}_cached')
-
-
-def threaded_get(cache, key):
-    return cache.get(key)
-
-
 class TestLFUcache:
 
     @pytest.mark.parametrize("items, size, expected_results", [
@@ -32,16 +24,22 @@ class TestLFUcache:
         keys = 'aaaaaaaaaaaaaaaaaaaaaaaaaaabbc'
         lfucache = LFUCache(2)
 
-        def key_gen():
+        def _do_set(cache, key):
+            cache.set(key, f'{key}_cached')
+
+        def _do_get(cache, key):
+            return cache.get(key)
+
+        def _key_gen():
             i = 0
             while i < 30000:
                 i += 1
                 yield random.choice(keys)
 
-        def random_func(cache, key):
-            return random.choice([threaded_get, threaded_get, threaded_set])(cache, key)
+        def _random_func(cache, key):
+            return random.choice([_do_get, _do_get, _do_set])(cache, key)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
-            futures = (executor.submit(random_func, lfucache, key) for key in key_gen())
+            futures = (executor.submit(_random_func, lfucache, key) for key in _key_gen())
             for future in concurrent.futures.as_completed(futures):
                 future.result()
