@@ -33,7 +33,11 @@ class DrawGraphMixin:
         que = collections.deque()
         if starting_word:
             matched_prefix_of_last_word, rest_of_word, new_node, matched_words = self._prefix_autofill(word=starting_word)
-            matched_word = matched_words[-1]
+            try:
+                matched_word = matched_words[-1]
+            except IndexError:
+                new_node = self._dwg
+                matched_word = 'root'
         else:
             new_node = self._dwg
             matched_word = 'root'
@@ -48,6 +52,11 @@ class DrawGraphMixin:
                 node_name = node.word
                 if node_name in self.SHOW_OBJ_IDS_OF_WORDS:
                     node_name = f'{node_name} {id(node)}'
+                else:
+                    try:
+                        node_name = self.words[node_name].display
+                    except (KeyError, AttributeError):
+                        pass
                 graph.add_node(node_name, fontcolor='blue', fontname='Arial', shape='rectangle')
             else:
                 node_name = node_alternative_names[node_id]
