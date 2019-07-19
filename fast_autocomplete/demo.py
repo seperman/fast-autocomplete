@@ -1,5 +1,6 @@
+import sys
 from pprint import pprint
-from fast_autocomplete.misc import read_single_keypress
+from fast_autocomplete.misc import read_single_keypress, termios
 
 
 def demo(running_modules, max_cost, size):
@@ -10,6 +11,9 @@ def demo(running_modules, max_cost, size):
     word_list = []
 
     running_modules = running_modules if isinstance(running_modules, dict) else {running_modules.__class__.__name__: running_modules}
+
+    if termios is None:
+        sys.exit('termios and/or fcntl packages are not available in your system. This is possibly because you are not on a Linux Distro.')
 
     print('FAST AUTOCOMPLETE DEMO')
     print('Press any key to search for. Press ctrl+c to exit')

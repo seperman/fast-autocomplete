@@ -2,8 +2,11 @@ import io
 import os
 import csv
 import sys
-import termios
-import fcntl
+try:
+    import termios
+    import fcntl
+except Exception:
+    termios = fcntl = None
 
 
 class FileNotFound(ValueError):
@@ -61,6 +64,8 @@ def read_single_keypress():
     KeyboardInterrupt which can happen when a signal gets handled)
 
     """
+    if fcntl is None or termios is None:
+        raise ValueError('termios and/or fcntl packages are not available in your system. This is possible because you are not on a Linux Distro.')
     fd = sys.stdin.fileno()
     # save old state
     flags_save = fcntl.fcntl(fd, fcntl.F_GETFL)
