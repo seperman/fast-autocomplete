@@ -11,11 +11,11 @@ MAX_WORD_LENGTH = 40
 _normalized_lfu_cache = LFUCache(NORMALIZED_CACHE_SIZE)
 
 
-def normalize_node_name(name):
+def normalize_node_name(name, extra_chars=None):
     name = name[:MAX_WORD_LENGTH]
     result = _normalized_lfu_cache.get(name)
     if result == -1:
-        result = _get_normalized_node_name(name)
+        result = _get_normalized_node_name(name, extra_chars=extra_chars)
         _normalized_lfu_cache.set(name, result)
     return result
 
@@ -38,12 +38,12 @@ def remove_any_special_character(name):
     return ''.join(filter(_remove_invalid_chars, name)).strip()
 
 
-def _get_normalized_node_name(name):
+def _get_normalized_node_name(name, extra_chars=None):
     name = name.lower()
     result = []
     last_i = None
     for i in name:
-        if i in valid_chars_for_node_name:
+        if i in valid_chars_for_node_name or extra_chars and i in extra_chars:
             if i == '-':
                 i = ' '
             elif (i in valid_chars_for_integer and last_i in valid_chars_for_string) or (i in valid_chars_for_string and last_i in valid_chars_for_integer):
