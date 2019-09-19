@@ -3,7 +3,7 @@ from fast_autocomplete.lfucache import LFUCache
 
 valid_chars_for_string = {i for i in string.ascii_letters.lower()}
 valid_chars_for_integer = {i for i in string.digits}
-valid_chars_for_node_name = {' ', '-', ':'} | valid_chars_for_string | valid_chars_for_integer
+valid_chars_for_node_name = {' ', '-', ':', '_'} | valid_chars_for_string | valid_chars_for_integer
 
 NORMALIZED_CACHE_SIZE = 2048
 MAX_WORD_LENGTH = 40
