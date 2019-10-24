@@ -63,7 +63,7 @@ DWG stands for Directed Word Graph. Here is an example DWG based on the "makes_m
 # Usage
 
 First of all lets start from your data. The library leaves it up to you how to prepare your data.
-If you want to go straight to the factory function that lets you use the library in its easiest and most common case, skip all these and jump to the [sort](#sort) example.
+If you want to go straight to the factory function that lets you use the library in its easiest and most common case, skip all these and jump to the [sorting](#sorting) example.
 
 ## Example 1
 
