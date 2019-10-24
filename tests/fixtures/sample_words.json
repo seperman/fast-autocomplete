@@ -1,0 +1,97 @@
+{
+  "acura rlx": [
+    {
+      "model": "rlx",
+      "make": "acura"
+    },
+    "Acura RLX",
+    3132
+  ],
+  "rlx": [
+    {
+      "model": "rlx",
+      "make": "acura"
+    },
+    "Acura RLX",
+    3132
+  ],
+  "acura": [
+    {
+      "make": "acura"
+    },
+    "Acura",
+    130123
+  ],
+  "acura rlx sport hybrid": [
+    {
+      "model": "rlx sport hybrid",
+      "make": "acura"
+    },
+    "Acura RLX Sport Hybrid",
+    4
+  ],
+  "rlx sport hybrid": [
+    {
+      "model": "rlx sport hybrid",
+      "make": "acura"
+    },
+    "Acura RLX Sport Hybrid",
+    4
+  ],
+  "acura ilx": [
+    {
+      "model": "ilx--ilx hybrid",
+      "make": "acura"
+    },
+    "Acura ILX",
+    19936
+  ],
+  "ilx": [
+    {
+      "model": "ilx--ilx hybrid",
+      "make": "acura"
+    },
+    "Acura ILX",
+    19936
+  ],
+  "acura mdx": [
+    {
+      "model": "mdx",
+      "make": "acura"
+    },
+    "Acura MDX",
+    35290
+  ],
+  "mdx": [
+    {
+      "model": "mdx",
+      "make": "acura"
+    },
+    "Acura MDX",
+    35290
+  ],
+  "acura nsx": [
+    {
+      "model": "nsx",
+      "make": "acura"
+    },
+    "Acura NSX",
+    271
+  ],
+  "nsx": [
+    {
+      "model": "nsx",
+      "make": "acura"
+    },
+    "Acura NSX",
+    271
+  ],
+  "acura rdx": [
+    {
+      "model": "rdx",
+      "make": "acura"
+    },
+    "Acura RDX",
+    33905
+  ]
+}

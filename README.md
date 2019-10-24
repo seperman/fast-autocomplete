@@ -63,6 +63,7 @@ DWG stands for Directed Word Graph. Here is an example DWG based on the "makes_m
 # Usage
 
 First of all lets start from your data. The library leaves it up to you how to prepare your data.
+If you want to go straight to the factory function that lets you use the library in its easiest and most common case, skip all these and jump to the [sort](#sort) example.
 
 ## Example 1
 
@@ -247,6 +248,88 @@ converted to contexts:
 [[{'year': '2007'}, {'make': alfa romeo'}], [{'year': '2007'}, {'make': alfa romeo'}, {'location': 'los angeles'}]]
 ```
 
+## Sorting
+
+Most people who use Fast Autocomplete, want to control how results are sorted. If you don't control that, the results will be sorted based on the order that Autocomplete found the nodes in the graph that matched the criteria.
+
+The easiest way to sort is to give each item a count.
+
+For example:
+
+1. Make a json file that is a dictionary of words to their context.
+
+The format of the file needs to be:
+
+```json
+
+{
+    word: [
+        context,
+        display value,
+        count
+    ]
+}
+```
+
+An example is included in the <tests/fixtures/sample_words.json>
+
+```json
+{
+  "acura rlx": [
+    {
+      "model": "rlx",
+      "make": "acura"
+    },
+    "Acura RLX",
+    3132
+  ],
+  "rlx": [
+    {
+      "model": "rlx",
+      "make": "acura"
+    },
+    "Acura RLX",
+    3132
+  ],
+  "acura": [
+    {
+      "make": "acura"
+    },
+    "Acura",
+    130123
+  ],
+  ...
+}
+```
+
+You might be wondering why things are in this format. It is to save space when this json can become very big easily and the keys become repetitive. That's why we are using a list we predefined order of keys. For your use case for now you can leave the context and display values as None.
+
+2. Launch Autocomplete via the factory function:
+
+```py
+from fast_autocomplete import autocomplete_factory
+
+content_files = {
+    'words': {
+        'filepath': path/to/sample_words.json,
+        'compress': True  # means compress the graph data in memory
+    }
+}
+
+autocomplete = autocomplete_factory(content_files=content_files)
+```
+
+3. You can use Autocomplete and the results are ordered by count!
+
+
+```py
+>>> autocomplete.search(word='acu')
+[['acura'], ['acura mdx'], ['acura rdx']]
+```
+
+4. How do we use the context and display value now?
+
+Great question. You need to extend AutoComplete class to use these items. I will write a blog post about it.
 
 ## Draw
 
