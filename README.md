@@ -302,7 +302,7 @@ An example is included in the <tests/fixtures/sample_words.json>
 }
 ```
 
-You might be wondering why things are in this format. It is to save space when this json can become very big easily and the keys become repetitive. That's why we are using a list we predefined order of keys. For your use case for now you can leave the context and display values as None.
+You might be wondering why things are in this format. It is to save space when this json can become very big easily and the keys become repetitive. That's why we are using a list with predefined order of keys. For your use case for now you can leave the context and display values as None if you want. We will opensource other factory functions soon that will fully utilize those keys in the context.
 
 2. Launch Autocomplete via the factory function:
 
