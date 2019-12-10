@@ -252,7 +252,7 @@ converted to contexts:
 
 Most people who use Fast Autocomplete, want to control how results are sorted. If you don't control that, the results will be sorted based on the order that Autocomplete found the nodes in the graph that matched the criteria.
 
-The easiest way to sort is to give each item a count.
+The easiest way to sort is to give each item a count. **Fast AutoComplete will use the count to sort items that are partial matches.**
 
 For example:
 
@@ -271,7 +271,7 @@ The format of the file needs to be:
 }
 ```
 
-An example is included in the <tests/fixtures/sample_words.json>
+An example is included in the [sample_words.json](tests/fixtures/sample_words.json)
 
 ```json
 {
@@ -330,6 +330,72 @@ autocomplete = autocomplete_factory(content_files=content_files)
 4. How do we use the context and display value now?
 
 Great question. You need to extend AutoComplete class to use these items. I will write a blog post about it.
+
+
+### Change the sorting by updating counts
+
+Fast Autocomplete by default uses the "count" of the items to sort the items in the results. Think about these counts as a "guide" to Fast autocomplete so it can polish its results. Depending on whether or not Fast autocomplete finds exact matches to user's query, the counts will be used to refine the results. You can update the counts in an autocomplete object live.
+
+For example, in the [sample csv of car makes and models](tests/fixtures/makes_models_from_wikipedia.csv) we have:
+
+```csv
+make,model,count
+Toyota,Aurion,6094
+Toyota,Avalon,8803
+Toyota,Avensis,1630
+Toyota,Auris,4025
+Toyota,Aygo,2115
+```
+
+If we use the autocomplete to search:
+
+```py
+>>> auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS, full_stop_words=['bmw', 'alfa romeo'])
+>>> autocomplete.search(word='toyota a')
+[['toyota'], ['toyota avalon'], ['toyota aurion'], ['toyota auris']]
+```
+
+However as you can notice `toyota aygo` had the count of 2115 and thus it didn't make it to the top 3 results.
+
+We can set the count for `toyota aygo` to a higher number to boost it in the results using `update_count_of_word`.
+
+The `update_count_of_word` can change the count via setting the word's count directly or by offsetting its current value.
+
+```py
+>>> auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS, full_stop_words=['bmw', 'alfa romeo'])
+>>> auto_complete.update_count_of_word(word='toyota aygo', count=10000)
+10000
+```
+
+Now if we search:
+
+```py
+>>> autocomplete.search(word='toyota a')
+[['toyota'], ['toyota aygo'], ['toyota avalon'], ['toyota aurion']]
+```
+
+We can double check the count of a node:
+
+```py
+>>> autocomplete.get_count_of_word('toyota aygo')
+10000
+```
+
+Now let's use the offset to offset the current count of a different node:
+
+
+```py
+>>> auto_complete.update_count_of_word(word='toyota aurion', offset=-6000)
+94
+```
+
+When we search, `toyota aurion` is not in the top 3 results anymore!
+
+```py
+>>> autocomplete.search(word='toyota a')
+[['toyota'], ['toyota aygo'], ['toyota avalon'], ['toyota auris']]
+```
+
 
 ## Draw
 

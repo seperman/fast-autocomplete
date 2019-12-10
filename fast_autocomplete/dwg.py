@@ -15,6 +15,10 @@ ORIGINAL_KEY = 'original_key'
 INF = float('inf')
 
 
+class NodeNotFound(ValueError):
+    pass
+
+
 class FindStep(Enum):
     start = 0
     descendants_only = 1
@@ -437,6 +441,26 @@ class AutoComplete:
                     new_tokens.append(node.word)
         return new_tokens
 
+    def update_count_of_word(self, word, count=None, offset=None):
+        """
+        Update the count attribute of a node in the dwg. This only affects the autocomplete
+        object and not the original count of the node in the data that was fed into fast_autocomplete.
+        """
+        matched_prefix_of_last_word, rest_of_word, node, matched_words_part, matched_condition_ever, matched_condition_in_branch = self._prefix_autofill_part(word=word)
+        if node:
+            if offset:
+                with self._lock:
+                    node.count += offset
+            elif count:
+                with self._lock:
+                    node.count = count
+        else:
+            raise NodeNotFound(f'Unable to find a node for word {word}')
+        return node.count
+
+    def get_count_of_word(self, word):
+        return self.update_count_of_word(word)
+
 
 class _DawgNode:
     """
@@ -475,7 +499,7 @@ class _DawgNode:
             node.word = word
             node.original_key = original_key
             if insert_count:
-                node.count = count
+                node.count = int(count)  # converts any str to int
         return node
 
     def get_descendants_nodes(self, size, should_traverse=True, full_stop_words=None, insert_count=True):
@@ -511,7 +535,7 @@ class _DawgNode:
                         que.append((letter, grand_child_node))
 
     def get_descendants_words(
-        self, size, should_traverse=True, full_stop_words=None, insert_count=True):
+            self, size, should_traverse=True, full_stop_words=None, insert_count=True):
         found_nodes_gen = self.get_descendants_nodes(
             size,
             should_traverse=should_traverse,
@@ -522,7 +546,7 @@ class _DawgNode:
         if insert_count is True:
             found_nodes = sorted(
                 found_nodes_gen,
-                key=lambda node: int(node.count),  # converts any str to int
+                key=lambda node: node.count,
                 reverse=True
             )[:size + 1]
         else:

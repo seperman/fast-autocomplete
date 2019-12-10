@@ -445,3 +445,18 @@ class TestOther:
         results = auto_complete.get_word_context(word)
         print_results(locals())
         assert expected_results == results
+
+    @pytest.mark.parametrize("word, update_dict, expected_results, expected_new_count", [
+        ('toyota a', None, [['toyota'], ['toyota avalon'], ['toyota aurion'], ['toyota auris']], None),
+        ('toyota a', {'word': 'toyota aygo', 'count': 10000}, [['toyota'], ['toyota aygo'], ['toyota avalon'], ['toyota aurion']], 10000),
+        ('toyota a', {'word': 'toyota aurion', 'offset': -6000}, [['toyota'], ['toyota avalon'], ['toyota auris'], ['toyota aygo']], 94),
+    ])
+    def test_update_count_of_word(self, word, update_dict, expected_results, expected_new_count):
+        auto_complete = AutoComplete(words=WIKIPEDIA_WORDS, synonyms=SYNONYMS, full_stop_words=['bmw', 'alfa romeo'])
+        if update_dict:
+            new_count = auto_complete.update_count_of_word(**update_dict)
+            assert expected_new_count == new_count
+            assert expected_new_count == auto_complete.get_count_of_word(update_dict['word'])
+        results = auto_complete.search(word, max_cost=2, size=4)
+        print_results(locals())
+        assert expected_results == results
