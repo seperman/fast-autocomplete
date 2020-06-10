@@ -28,6 +28,9 @@ setup(
     author_email='sepd@fair.com',
     version=version,
     install_requires=reqs,
+    extras_require={
+        'pylev': ['pylev>=1.3.0'],
+    },
     dependency_links=[],
     packages=find_packages(exclude=('tests', 'docs')),
     include_package_data=True,

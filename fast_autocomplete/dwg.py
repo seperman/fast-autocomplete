@@ -8,7 +8,15 @@ from threading import Lock
 from fast_autocomplete.lfucache import LFUCache
 from fast_autocomplete.misc import _extend_and_repeat
 from fast_autocomplete.normalize import normalize_node_name
-from Levenshtein import distance as levenshtein_distance
+
+# Prefer the 'Levenshtein' library implementation
+try:
+    from Levenshtein import distance as levenshtein_distance
+except ImportError:
+    try:
+        from pylev import levenshtein as levenshtein_distance
+    except ImportError:
+        pass
 
 DELIMITER = '__'
 ORIGINAL_KEY = 'original_key'
