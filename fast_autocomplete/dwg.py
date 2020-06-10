@@ -18,6 +18,16 @@ except ImportError:
     except ImportError:
         pass
 
+if 'levenshtein_distance' not in locals():
+    raise RuntimeError("""
+        Unable to import a levenshtein distance calculation module.
+        Please add python-Levenshtein or pylev to your Python dependencies.
+
+        Installing this package as fast-autocomplete[levenshtein] or
+        fast-autocomplete[pylev] (to select an implementation via 'extras')
+        should do this for you.
+    """)
+
 DELIMITER = '__'
 ORIGINAL_KEY = 'original_key'
 INF = float('inf')
