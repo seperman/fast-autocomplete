@@ -3,15 +3,6 @@ from setuptools import setup, find_packages
 version = '0.6.0'
 
 
-def get_reqs(filename):
-    with open(filename, "r") as reqs_file:
-        reqs = reqs_file.readlines()
-        reqs = list(map(lambda x: x.replace('==', '>='), reqs))
-    return reqs
-
-
-reqs = get_reqs("requirements.txt")
-
 try:
     with open('README.md') as file:
         long_description = file.read()
@@ -27,8 +18,9 @@ setup(
     url='https://github.com/wearefair/fast-autocomplete',
     author_email='sepd@fair.com',
     version=version,
-    install_requires=reqs,
+    install_requires=[],
     extras_require={
+        'levenshtein': ['python-Levenshtein>=0.12.0'],
         'pylev': ['pylev>=1.3.0'],
     },
     dependency_links=[],
