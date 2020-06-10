@@ -8,7 +8,7 @@ from threading import Lock
 from fast_autocomplete.lfucache import LFUCache
 from fast_autocomplete.misc import _extend_and_repeat
 from fast_autocomplete.normalize import normalize_node_name
-from pylev import levenshtein
+from Levenshtein import distance as levenshtein_distance
 
 DELIMITER = '__'
 ORIGINAL_KEY = 'original_key'
@@ -281,7 +281,7 @@ class AutoComplete:
             for _word in self.words:
                 if abs(len(_word) - len(new_word)) > max_cost:
                     continue
-                dist = levenshtein(new_word, _word)
+                dist = levenshtein_distance(new_word, _word)
                 if dist < max_cost:
                     fuzzy_matches_len += 1
                     _value = self.words[_word].get(ORIGINAL_KEY, _word)
