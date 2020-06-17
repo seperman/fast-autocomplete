@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+          key: deps1-{{ checksum "setup.py" }}-{{ checksum "requirements-dev.txt" }}
       - run:
           command: |
             sudo apt install graphviz
@@ -16,7 +16,7 @@ jobs:
             . venv/bin/activate
             pip install -r requirements-dev.txt
       - save_cache:
-          key: deps1-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+          key: deps1-{{ checksum "setup.py" }}-{{ checksum "requirements-dev.txt" }}
           paths:
             - "venv"
       - run:
