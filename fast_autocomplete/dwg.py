@@ -8,7 +8,22 @@ from threading import Lock
 from fast_autocomplete.lfucache import LFUCache
 from fast_autocomplete.misc import _extend_and_repeat
 from fast_autocomplete.normalize import normalize_node_name
-from Levenshtein import distance as levenshtein_distance
+
+# Prefer the 'Levenshtein' library implementation
+try:
+    from Levenshtein import distance as levenshtein_distance
+except ImportError:
+    try:
+        from pylev import levenshtein as levenshtein_distance
+    except ImportError:
+        raise RuntimeError("""
+            Unable to import a levenshtein distance calculation module.
+            Please add python-Levenshtein or pylev to your Python dependencies.
+
+            Installing this package as fast-autocomplete[levenshtein] or
+            fast-autocomplete[pylev] (to select an implementation via 'extras')
+            should do this for you.
+        """)
 
 DELIMITER = '__'
 ORIGINAL_KEY = 'original_key'
