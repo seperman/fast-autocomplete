@@ -15,8 +15,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Sep Dehpour',
-    url='https://github.com/wearefair/fast-autocomplete',
-    author_email='sepd@fair.com',
+    url='https://github.com/seperman/fast-autocomplete',
+    author_email='sep@zepworks.com',
     version=version,
     install_requires=[],
     extras_require={
@@ -35,6 +35,8 @@ setup(
         "Topic :: Software Development",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Development Status :: 4 - Beta",
     ]
 )
