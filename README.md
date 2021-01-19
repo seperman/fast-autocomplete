@@ -397,6 +397,16 @@ When we search, `toyota aurion` is not in the top 3 results anymore!
 ```
 
 
+## Unicode
+
+By default this package only accepts ASCII characters. However you can pass the characters that you want to be acceptable via `valid_chars_for_string` for strings, and `valid_chars_for_integer` for numbers. For example here we tell Autocomplete to consider the Farsi alphabet characters for string characters.
+
+```python
+AutoComplete(
+    words=SHORT_WORDS_UNICODE,
+    valid_chars_for_string='اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی')
+```
+
 ## Draw
 
 This package can actually draw the dwgs as it is populating them or just once the dwg is populated for you!
@@ -450,6 +460,8 @@ from fast_autocomplete import demo
 demo(autocomplete, max_cost=3, size=5)
 ```
 
+#
+
 # Develop
 
 1. Clone the repo
@@ -474,7 +486,7 @@ git push && git push --tags
 
 # Authors
 
-- Autocomplete by [Sep Dehpour](http://zepworks.com) at [Fair Financial Corp](https://fair.com).
+- Autocomplete written by [Sep Dehpour](http://zepworks.com).
 - LFU Cache by [Shane Wang](https://medium.com/@epicshane)
 
 # Other ways of doing AutoComplete

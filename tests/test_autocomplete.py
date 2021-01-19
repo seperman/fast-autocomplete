@@ -66,6 +66,8 @@ WIKIPEDIA_WORDS = get_words('fixtures/makes_models_from_wikipedia.csv')
 
 SHORT_WORDS = get_words('fixtures/makes_models_short.csv')
 
+SHORT_WORDS_UNICODE = get_words('fixtures/makes_models_in_farsi_short.csv')
+
 SHORT_WORDS_IMMUTABLE_INFO = {key: Info(**value) for key, value in SHORT_WORDS.items()}
 
 
@@ -82,6 +84,18 @@ class TestAutocomplete:
     ])
     def test_search_without_synonyms(self, word, max_cost, size, expected_results):
         auto_complete = AutoComplete(words=WIKIPEDIA_WORDS)
+        results, find_steps = auto_complete._find(word, max_cost, size)
+        results = dict(results)
+        print_results(locals())
+        assert expected_results == results
+
+    @pytest.mark.parametrize("word, max_cost, size, expected_results", [
+        ('بی ام و', 2, 3, {0: [['بی ام و']], 1: [['بی ام و 1 series'], ['بی ام و 2 series']]}),
+    ])
+    def test_search_unicode_without_synonyms(self, word, max_cost, size, expected_results):
+        auto_complete = AutoComplete(
+            words=SHORT_WORDS_UNICODE,
+            valid_chars_for_string='اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی')
         results, find_steps = auto_complete._find(word, max_cost, size)
         results = dict(results)
         print_results(locals())

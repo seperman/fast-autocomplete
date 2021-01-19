@@ -1,8 +1,13 @@
 import pytest
-from fast_autocomplete.normalize import remove_any_special_character, normalize_node_name
+from fast_autocomplete.normalize import Normalizer
+
+normalizer = Normalizer()
+normalizer_unicode = Normalizer(
+    valid_chars_for_string='زرتپبا'
+)
 
 
-class TestMisc:
+class TestNormalizer:
 
     @pytest.mark.parametrize("name, expected_result", [
         ('type-r', 'type-r'),
@@ -12,7 +17,7 @@ class TestMisc:
         (None, ''),
     ])
     def test_remove_any_special_character(self, name, expected_result):
-        result = remove_any_special_character(name)
+        result = normalizer.remove_any_special_character(name)
         assert expected_result == result
 
     @pytest.mark.parametrize("name, extra_chars, expected_result", [
@@ -24,5 +29,12 @@ class TestMisc:
         (None, None, ''),
     ])
     def test_normalize_node_name(self, name, extra_chars, expected_result):
-        result = normalize_node_name(name, extra_chars=extra_chars)
+        result = normalizer.normalize_node_name(name, extra_chars=extra_chars)
+        assert expected_result == result
+
+    @pytest.mark.parametrize("name, extra_chars, expected_result", [
+        ('درپب', None, 'رپب'),
+    ])
+    def test_normalize_unicode_node_name(self, name, extra_chars, expected_result):
+        result = normalizer_unicode.normalize_node_name(name, extra_chars=extra_chars)
         assert expected_result == result

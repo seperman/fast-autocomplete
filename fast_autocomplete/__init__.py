@@ -12,4 +12,4 @@ from fast_autocomplete.dwg import AutoComplete
 from fast_autocomplete.draw import DrawGraphMixin
 from fast_autocomplete.demo import demo
 from fast_autocomplete.loader import autocomplete_factory
-from fast_autocomplete.normalize import normalize_node_name, remove_any_special_character
+from fast_autocomplete.normalize import Normalizer

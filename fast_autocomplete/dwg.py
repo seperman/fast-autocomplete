@@ -7,7 +7,7 @@ from enum import Enum
 from threading import Lock
 from fast_autocomplete.lfucache import LFUCache
 from fast_autocomplete.misc import _extend_and_repeat
-from fast_autocomplete.normalize import normalize_node_name
+from fast_autocomplete.normalize import Normalizer
 
 # Prefer the 'Levenshtein' library implementation
 try:
@@ -20,9 +20,15 @@ except ImportError:
             Unable to import a levenshtein distance calculation module.
             Please add python-Levenshtein or pylev to your Python dependencies.
 
-            Installing this package as fast-autocomplete[levenshtein] or
-            fast-autocomplete[pylev] (to select an implementation via 'extras')
-            should do this for you.
+            Installing this package as
+
+            pip install fast-autocomplete[levenshtein]
+
+            or
+
+            pip install fast-autocomplete[pylev]
+
+            Note that fast-autocomplete[levenshtein] is preferred and is much faster than fast-autocomplete[pylev]
         """)
 
 DELIMITER = '__'
@@ -48,7 +54,16 @@ class AutoComplete:
     CACHE_SIZE = 2048
     SHOULD_INCLUDE_COUNT = True
 
-    def __init__(self, words, synonyms=None, full_stop_words=None, logger=None):
+    def __init__(
+            self,
+            words,
+            synonyms=None,
+            full_stop_words=None,
+            logger=None,
+            valid_chars_for_string=None,
+            valid_chars_for_integer=None,
+            valid_chars_for_node_name=None,
+    ):
         """
         Inistializes the Autocomplete module
 
@@ -65,6 +80,11 @@ class AutoComplete:
         self._full_stop_words = set(full_stop_words) if full_stop_words else None
         self.logger = logger
         self.words = words
+        self.normalizer = Normalizer(
+            valid_chars_for_string=valid_chars_for_string,
+            valid_chars_for_integer=valid_chars_for_integer,
+            valid_chars_for_node_name=valid_chars_for_node_name,
+        )
         new_words = self._get_partial_synonyms_to_words()
         self.words.update(new_words)
         self._populate_dwg()
@@ -225,7 +245,7 @@ class AutoComplete:
         """
         Gets the word's context from the words dictionary
         """
-        word = normalize_node_name(word)
+        word = self.normalizer.normalize_node_name(word)
         return self.words.get(word)
 
     def search(self, word, max_cost=2, size=5):
@@ -235,7 +255,7 @@ class AutoComplete:
         - max_cost: Maximum Levenshtein edit distance to be considered when calculating results
         - size: The max number of results to return
         """
-        word = normalize_node_name(word)
+        word = self.normalizer.normalize_node_name(word)
         if not word:
             return []
         key = f'{word}-{max_cost}-{size}'
