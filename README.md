@@ -333,6 +333,14 @@ autocomplete = autocomplete_factory(content_files=content_files)
 
 Great question. You need to extend AutoComplete class to use these items. I will write a blog post about it.
 
+Here is a simple example without any extending:
+
+```py
+>>> autocomplete.words['acura']
+WordValue(context={'make': 'acura'}, display='Acura', count=130123, original_key=None)
+>>> autocomplete.words['acura'].display
+Acura
+```
 
 ### Change the sorting by updating counts
 
