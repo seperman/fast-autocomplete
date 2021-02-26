@@ -409,13 +409,24 @@ When we search, `toyota aurion` is not in the top 3 results anymore!
 
 ## Unicode
 
-By default this package only accepts ASCII characters. However you can pass the characters that you want to be acceptable via `valid_chars_for_string` for strings, and `valid_chars_for_integer` for numbers. For example here we tell Autocomplete to consider the Farsi alphabet characters for string characters.
+By default this package only accepts ASCII lowercase letters, a-z. However you can pass the characters that you want to be acceptable via `valid_chars_for_string` for strings, and `valid_chars_for_integer` for numbers. For example here we tell Autocomplete to consider the Farsi alphabet characters for string characters.
 
 ```python
 AutoComplete(
     words=SHORT_WORDS_UNICODE,
     valid_chars_for_string='اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی')
 ```
+
+If you want to pass other characters in addition to ASCII letters, such as punctuation marks, you need to set the `valid_chars_for_string` variable to include all of the characters you need. For example, the following code block sets ASCII letters a-z along with periods and apostrophes:
+
+```python
+valid_chars = ".'"
+valid_chars += string.ascii_lowercase
+AutoComplete(
+    words=WORDS_WITH_PUNCTUATION,
+    valid_chars_for_string=valid_chars)
+```
+
 
 ## Draw
 
