@@ -29,11 +29,11 @@ setup(
     scripts=[],
     test_suite="tests",
     tests_require=['mock'],
+    license='MIT',
     classifiers=[
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Topic :: Software Development",
-        "License :: MIT License",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
