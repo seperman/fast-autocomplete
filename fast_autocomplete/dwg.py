@@ -201,7 +201,12 @@ class AutoComplete:
                 count=count,
                 insert_count=self.SHOULD_INCLUDE_COUNT
             )
-            temp_leaf_node.children[word[-1]] = leaf_node
+            # It already has children
+            if temp_leaf_node.children and word[-1] in temp_leaf_node.children:
+                temp_leaf_node.children[word[-1]].word = leaf_node.word
+            # otherwise merge into the leaf node
+            else:
+                temp_leaf_node.children[word[-1]] = leaf_node
         else:
             leaf_node = self._dwg.insert(
                 word,

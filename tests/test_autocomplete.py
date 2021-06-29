@@ -101,6 +101,13 @@ class TestAutocomplete:
         print_results(locals())
         assert expected_results == results
 
+    def test_autocomplete_synonym_part_of_another_word(self):
+        words = {'cartoon': {}, 'vehicle': {}}
+        synonyms = {'vehicle': ['car']}
+        autocomplete = AutoComplete(words=words, synonyms=synonyms)
+        result = autocomplete.search(word='ca')
+        assert [['vehicle'], ['cartoon']] == result
+
 
 STEP_DESCENDANTS_ONLY = [FindStep.descendants_only]
 STEP_FUZZY_FOUND = [FindStep.fuzzy_try, FindStep.fuzzy_found]
