@@ -157,14 +157,14 @@ class AutoComplete:
                     self._dwg = _DawgNode()
                     for word, value in self.words.items():
                         original_key = value.get(ORIGINAL_KEY)
-                        word = word.strip().lower()
+                        # word = word.strip().lower()
                         count = value.get('count', 0)
                         leaf_node = self.insert_word_branch(
                             word,
                             original_key=original_key,
                             count=count
                         )
-                        if self._clean_synonyms:
+                        if leaf_node and self._clean_synonyms:
                             for synonym in self._clean_synonyms.get(word, []):
                                 self.insert_word_branch(
                                     synonym,
@@ -193,23 +193,33 @@ class AutoComplete:
                              original key is `bmw`. This parameter might be removed in the future.
 
         """
+        # if word == 'u (2 off)':
+        #     import pytest; pytest.set_trace()
+        normalized_word = self.normalizer.normalize_node_name(word)
+        # sometimes if the word does not have any valid characters, the normalized_word will be empty
+        if not normalized_word:
+            return
+        last_char = normalized_word[-1]
+
         if leaf_node:
             temp_leaf_node = self._dwg.insert(
-                word[:-1],
+                word=word,
+                normalized_word=normalized_word[:-1],
                 add_word=add_word,
                 original_key=original_key,
                 count=count,
                 insert_count=self.SHOULD_INCLUDE_COUNT
             )
             # It already has children
-            if temp_leaf_node.children and word[-1] in temp_leaf_node.children:
-                temp_leaf_node.children[word[-1]].word = leaf_node.word
+            if temp_leaf_node.children and last_char in temp_leaf_node.children:
+                temp_leaf_node.children[last_char].word = leaf_node.word
             # otherwise merge into the leaf node
             else:
-                temp_leaf_node.children[word[-1]] = leaf_node
+                temp_leaf_node.children[last_char] = leaf_node
         else:
             leaf_node = self._dwg.insert(
-                word,
+                word=word,
+                normalized_word=normalized_word,
                 original_key=original_key,
                 count=count,
                 insert_count=self.SHOULD_INCLUDE_COUNT
@@ -471,6 +481,9 @@ class AutoComplete:
             return False
 
     def get_all_descendent_words_for_condition(self, word, size, condition):
+        """
+        This is used in the search tokenizer not in the fast autocomplete itself.
+        """
         new_tokens = []
 
         matched_prefix_of_last_word, rest_of_word, node, matched_words_part, matched_condition_ever, matched_condition_in_branch = self._prefix_autofill_part(word=word)
@@ -527,9 +540,9 @@ class _DawgNode:
     def value(self):
         return self.original_key or self.word
 
-    def insert(self, word, add_word=True, original_key=None, count=0, insert_count=True):
+    def insert(self, word, normalized_word, add_word=True, original_key=None, count=0, insert_count=True):
         node = self
-        for letter in word:
+        for letter in normalized_word:
             if letter not in node.children:
                 node.children[letter] = _DawgNode()
 
