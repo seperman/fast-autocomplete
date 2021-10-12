@@ -20,8 +20,8 @@ setup(
     version=version,
     install_requires=[],
     extras_require={
-        'levenshtein': ['python-Levenshtein>=0.12.0'],
-        'pylev': ['pylev>=1.3.0'],
+        'levenshtein': ['python-Levenshtein>=0.12.2'],
+        'pylev': ['pylev>=1.4.0'],
     },
     dependency_links=[],
     packages=find_packages(exclude=('tests', 'docs')),
