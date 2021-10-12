@@ -1,4 +1,4 @@
-# Fast Autocomplete 0.8.0
+# Fast Autocomplete 0.9.0
 
 [zepworks.com](https://zepworks.com)
 
