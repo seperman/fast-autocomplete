@@ -65,7 +65,7 @@ class AutoComplete:
             valid_chars_for_node_name=None,
     ):
         """
-        Inistializes the Autocomplete module
+        Initializes the Autocomplete module
 
         :param words: A dictionary of words mapped to their context
         :param synonyms: (optional) A dictionary of words to their synonyms.
