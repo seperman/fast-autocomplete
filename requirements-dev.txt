@@ -3,5 +3,5 @@ click>=8.0.3
 deepdiff==5.5.0
 flake8==4.0.1
 pygraphviz==1.7
-pytest==6.2.5
+pytest==9.0.3
 pytest_cov==3.0.0
