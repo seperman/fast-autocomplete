@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fast-autocomplete"
+version = "0.10.0"
+description = "Fast Autocomplete using Directed Word Graph"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    { name = "Sep Dehpour", email = "sep@zepworks.com" }
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Development Status :: 4 - Beta",
+]
+dependencies = [
+  "deepdiff"
+]
+
+[project.optional-dependencies]
+levenshtein = ["python-Levenshtein>=0.12.2"]
+pylev = ["pylev>=1.4.0"]
+
+[project.urls]
+Homepage = "https://github.com/seperman/fast-autocomplete"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["tests", "docs"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["fast_autocomplete"]
