@@ -1,11 +1,14 @@
 # flake8: noqa
 import sys
-import pkg_resources
+from importlib import metadata
 
-if (sys.version_info[0], sys.version_info[1]) < (3, 6):
-    sys.exit('fast-autocomplete requires Python 3.6 or later.')
+if sys.version_info < (3, 8):
+    sys.exit('fast-autocomplete requires Python 3.8 or later.')
 
-__version__ = pkg_resources.get_distribution("fast-autocomplete").version
+try:
+    __version__ = metadata.version("fast-autocomplete")
+except metadata.PackageNotFoundError:
+    __version__ = "unknown"
 
 from fast_autocomplete.dwg import AutoComplete
 from fast_autocomplete.draw import DrawGraphMixin
